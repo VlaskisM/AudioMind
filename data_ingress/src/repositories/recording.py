@@ -11,6 +11,10 @@ class AbstractRecordingRepository(ABC):
         self.session = session
 
     @abstractmethod
+    async def add(self, recording: Recording) -> int:
+        ...
+
+    @abstractmethod
     async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
         ...
 

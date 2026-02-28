@@ -1,5 +1,5 @@
 from src.db.relational.entities.recording import Recording
-from src.web.schemas.recording import RecordingResponse
+from src.web.schemas.recording import RecordingResponse, RecordingListResponse
 
 
 class RecordingMapper:
@@ -9,5 +9,7 @@ class RecordingMapper:
         return RecordingResponse.model_validate(recording)
 
     @staticmethod
-    def to_response_list(recordings: list[Recording]) -> list[RecordingResponse]:
-        return [RecordingResponse.model_validate(r) for r in recordings]
+    def to_list_response(recordings: list[Recording]) -> RecordingListResponse:
+        return RecordingListResponse(
+            data=[RecordingResponse.model_validate(r) for r in recordings]
+        )

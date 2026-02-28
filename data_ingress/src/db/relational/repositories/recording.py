@@ -10,6 +10,11 @@ class RecordingRepository(AbstractRecordingRepository):
     def __init__(self, session: AsyncSession):
         super().__init__(session)
 
+    async def add(self, recording: Recording) -> int:
+        self.session.add(recording)
+        await self.session.flush()
+        return recording.id
+
     async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
         recording = Recording(
             badge_id=badge_id,
