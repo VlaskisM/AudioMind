@@ -1,41 +1,14 @@
-from abc import ABC, abstractmethod
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.relational.entities.recording import Recording
-
-
-class AbstractRecordingRepository(ABC):
-
-    @abstractmethod
-    async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
-        ...
-
-    @abstractmethod
-    async def get_by_id(self, recording_id: int) -> Recording | None:
-        ...
-
-    @abstractmethod
-    async def get_all(self) -> list[Recording]:
-        ...
-
-    @abstractmethod
-    async def get_by_user_id(self, user_id: int) -> list[Recording]:
-        ...
-
-    @abstractmethod
-    async def get_by_badge_id(self, badge_id: str) -> list[Recording]:
-        ...
-
-    @abstractmethod
-    async def delete(self, recording_id: int) -> bool:
-        ...
+from src.repositories.recording import AbstractRecordingRepository
 
 
 class RecordingRepository(AbstractRecordingRepository):
+
     def __init__(self, session: AsyncSession):
-        self.session = session
+        super().__init__(session)
 
     async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
         recording = Recording(
@@ -45,8 +18,6 @@ class RecordingRepository(AbstractRecordingRepository):
             user_id=user_id,
         )
         self.session.add(recording)
-        await self.session.commit()
-        await self.session.refresh(recording)
         return recording
 
     async def get_by_id(self, recording_id: int) -> Recording | None:
@@ -69,9 +40,8 @@ class RecordingRepository(AbstractRecordingRepository):
         return list(result.scalars().all())
 
     async def delete(self, recording_id: int) -> bool:
-        recording = await self.get_by_id(recording_id)
+        recording = await self.session.get(Recording, recording_id)
         if recording is None:
             return False
         await self.session.delete(recording)
-        await self.session.commit()
         return True
