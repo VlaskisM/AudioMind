@@ -1,56 +1,62 @@
-from src.db.relational.db import async_session
-from src.db.relational.repositories.recording import RecordingRepository
-from src.web.schemas.recording import RecordingCreate, RecordingResponse
+import uuid
+from datetime import datetime
+from typing import BinaryIO
 
-
+from src.db.relational.entities.recording import Recording
 class RecordingService:
 
-    @staticmethod
-    def _to_response(recording) -> RecordingResponse:
-        return RecordingResponse.model_validate(recording)
+    def __init__(self, uow_class):
+        self._uow_class = uow_class
 
-    @staticmethod
-    def _to_response_list(recordings) -> list[RecordingResponse]:
-        return [RecordingResponse.model_validate(r) for r in recordings]
-
-    async def create(self, data: RecordingCreate) -> RecordingResponse:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            recording = await repo.create(
-                badge_id=data.badge_id,
-                ts=data.ts,
-                file_url=data.file_url,
-                user_id=data.user_id,
+    async def upload_and_create_recording(
+        self,
+        badge_id: str,
+        user_id: int,
+        file_obj: BinaryIO,
+        original_filename: str,
+    ) -> Recording:
+        """Загружает файл в S3 и создаёт запись в БД."""
+        async with self._uow_class() as uow:
+            file_key = self._generate_file_key(user_id, original_filename)
+            await uow.upload_file(file_obj, file_key)
+            file_url = await uow.get_file_url(file_key)
+            recording = await self._create_recording(
+                uow,
+                badge_id=badge_id,
+                file_url=file_url,
+                user_id=user_id,
             )
-            return self._to_response(recording)
+            await uow.commit()
+            return recording
 
-    async def get_all(self) -> list[RecordingResponse]:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            recordings = await repo.get_all()
-            return self._to_response_list(recordings)
+    async def create_recording(self, badge_id: str, file_url: str, user_id: int) -> Recording:
+        async with self._uow_class() as uow:
+            recording = await self._create_recording(
+                uow,
+                badge_id=badge_id,
+                file_url=file_url,
+                user_id=user_id,
+            )
+            await uow.commit()
+            return recording
 
-    async def get_by_id(self, recording_id: int) -> RecordingResponse | None:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            recording = await repo.get_by_id(recording_id)
-            if recording is None:
-                return None
-            return self._to_response(recording)
+    async def get_all_recordings(self) -> list[Recording]:
+        async with self._uow_class() as uow:
+            return await uow.recordings.get_all()
 
-    async def get_by_user_id(self, user_id: int) -> list[RecordingResponse]:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            recordings = await repo.get_by_user_id(user_id)
-            return self._to_response_list(recordings)
+    @staticmethod
+    async def _create_recording(uow, badge_id: str, file_url: str, user_id: int) -> Recording:
+        recording = Recording(
+            badge_id=badge_id,
+            ts=int(datetime.now().timestamp()),
+            file_url=file_url,
+            user_id=user_id,
+        )
+        await uow.recordings.add(recording)
+        return recording
 
-    async def get_by_badge_id(self, badge_id: str) -> list[RecordingResponse]:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            recordings = await repo.get_by_badge_id(badge_id)
-            return self._to_response_list(recordings)
-
-    async def delete(self, recording_id: int) -> bool:
-        async with async_session() as session:
-            repo = RecordingRepository(session)
-            return await repo.delete(recording_id)
+    @staticmethod
+    def _generate_file_key(user_id: int, original_filename: str) -> str:
+        ext = original_filename.rsplit(".", 1)[-1] if "." in original_filename else "bin"
+        unique_id = uuid.uuid4().hex[:12]
+        return f"recordings/{user_id}/{unique_id}.{ext}"

@@ -1,17 +1,30 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
+from src.db.uow import UnitOfWork
 from src.services.recording import RecordingService
-from src.web.schemas.recording import RecordingCreate, RecordingResponse
+from src.web.mappers.recording import RecordingMapper
+from src.web.schemas.recording import (
+    RecordingCreate,
+    RecordingResponse,
+    RecordingListResponse,
+)
 
 router = APIRouter(prefix="/recordings", tags=["recordings"])
-service = RecordingService()
+service = RecordingService(UnitOfWork)
+mapper = RecordingMapper()
 
 
-@router.get("/", response_model=list[RecordingResponse])
-async def get_all_recordings():
-    return await service.get_all()
+@router.get("/", response_model=RecordingListResponse)
+async def list_recordings():
+    recordings = await service.get_all_recordings()
+    return mapper.to_list_response(recordings)
 
 
-@router.post("/", response_model=RecordingResponse, status_code=201)
-async def create_recording(data: RecordingCreate):
-    return await service.create(data)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=RecordingResponse)
+async def create_recording(body: RecordingCreate):
+    recording = await service.create_recording(
+        badge_id=body.badge_id,
+        file_url=body.file_url,
+        user_id=body.user_id,
+    )
+    return mapper.to_response(recording)

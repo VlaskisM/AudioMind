@@ -6,3 +6,5 @@ sqlalchemy[asyncio]==2.0.35 # Асинхронный SQLAlchemy
 asyncpg==0.31.0 # Асинхронный PostgreSQL дравер
 alembic==1.18.4 # Миграции БД
 psycopg[binary]==3.3.3 # Синхронный PostgreSQL драйвер (для Alembic)
+aioboto3==15.5.0
+python-multipart==0.0.20 # Для загрузки файлов через FastAPI (Form, UploadFile)
