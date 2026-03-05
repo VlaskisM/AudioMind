@@ -17,6 +17,6 @@ class DatabaseSettings(BaseSettings):
     def db_url_sync(self) -> str:
         return f"postgresql+psycopg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
-    model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent.parent.parent / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).parent.parent.parent.parent / ".env", extra="ignore")
 
 postgres_settings = DatabaseSettings()
