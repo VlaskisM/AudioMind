@@ -9,9 +9,10 @@ from src.web.schemas.recording import (
     RecordingListResponse,
 )
 
-router = APIRouter(prefix="/recordings", tags=["recordings"])
-service = RecordingService(UnitOfWork)
+service = RecordingService(uow_factory=UnitOfWork)
 mapper = RecordingMapper()
+
+router = APIRouter(prefix="/recordings", tags=["recordings"])
 
 
 @router.get("/", response_model=RecordingListResponse)

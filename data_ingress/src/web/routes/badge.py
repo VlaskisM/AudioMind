@@ -5,9 +5,10 @@ from src.services.recording import RecordingService
 from src.web.mappers.recording import RecordingMapper
 from src.web.schemas.recording import RecordingResponse
 
-router = APIRouter(prefix="/badges", tags=["badges"])
-service = RecordingService(UnitOfWork)
+service = RecordingService(uow_factory=UnitOfWork)
 mapper = RecordingMapper()
+
+router = APIRouter(prefix="/badges", tags=["badges"])
 
 
 @router.post("/{badge_id}/upload", status_code=status.HTTP_201_CREATED, response_model=RecordingResponse)
