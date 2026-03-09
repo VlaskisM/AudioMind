@@ -7,4 +7,5 @@ asyncpg==0.31.0 # Асинхронный PostgreSQL дравер
 alembic==1.18.4 # Миграции БД
 psycopg[binary]==3.3.3 # Синхронный PostgreSQL драйвер (для Alembic)
 aioboto3==15.5.0
+aio-pika==9.5.4
 python-multipart==0.0.20 # Для загрузки файлов через FastAPI (Form, UploadFile)
