@@ -3,10 +3,12 @@ from datetime import datetime
 from typing import BinaryIO
 
 from src.db.relational.entities.recording import Recording
+
+
 class RecordingService:
 
-    def __init__(self, uow_class):
-        self._uow_class = uow_class
+    def __init__(self, uow_factory):
+        self._uow_factory = uow_factory
 
     async def upload_and_create_recording(
         self,
@@ -15,8 +17,7 @@ class RecordingService:
         file_obj: BinaryIO,
         original_filename: str,
     ) -> Recording:
-        """Загружает файл в S3 и создаёт запись в БД."""
-        async with self._uow_class() as uow:
+        async with self._uow_factory() as uow:
             file_key = self._generate_file_key(user_id, original_filename)
             await uow.upload_file(file_obj, file_key)
             file_url = await uow.get_file_url(file_key)
@@ -26,11 +27,12 @@ class RecordingService:
                 file_url=file_url,
                 user_id=user_id,
             )
+            uow.publish(recording.id, file_key)
             await uow.commit()
             return recording
 
     async def create_recording(self, badge_id: str, file_url: str, user_id: int) -> Recording:
-        async with self._uow_class() as uow:
+        async with self._uow_factory() as uow:
             recording = await self._create_recording(
                 uow,
                 badge_id=badge_id,
@@ -41,7 +43,7 @@ class RecordingService:
             return recording
 
     async def get_all_recordings(self) -> list[Recording]:
-        async with self._uow_class() as uow:
+        async with self._uow_factory() as uow:
             return await uow.recordings.get_all()
 
     @staticmethod

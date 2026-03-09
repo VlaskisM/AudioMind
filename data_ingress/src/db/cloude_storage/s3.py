@@ -38,6 +38,7 @@ class AsyncS3Uploader(S3UploaderBase):
             "s3",
             endpoint_url=self.s3_url,
         )
+        # s3_client - это по сути готовое соединение с хранилищем
         self.s3_client = await self._client_context.__aenter__()
         await self._ensure_bucket_exists()
 

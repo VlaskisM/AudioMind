@@ -12,6 +12,11 @@ services:
       - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   minio:
     image: minio/minio
@@ -27,6 +32,17 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: speechmate-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   app:
     build:
       context: .
@@ -34,17 +50,49 @@ services:
     container_name: speechmate-app
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     env_file:
       - .env
     environment:
       DB_HOST: speechmate-postgres
       DB_PORT: 5432
       S3_ENDPOINT: http://speechmate-minio:9000
+      RABBITMQ_HOST: speechmate-rabbitmq
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+
+  mongodb:
+    image: mongo:7
+    container_name: speechmate-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  transcription:
+    build:
+      context: .
+      dockerfile: transcription_service/Dockerfile
+    container_name: speechmate-transcription
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_HOST: speechmate-rabbitmq
+      S3_ENDPOINT: http://speechmate-minio:9000
+      MONGO_HOST: speechmate-mongodb
+    depends_on:
+      - rabbitmq
       - minio
+      - mongodb
 
 volumes:
   postgres_data:
   minio_data:
+  mongo_data:

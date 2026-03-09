@@ -9,4 +9,6 @@ COPY data_ingress/ ./data_ingress/
 
 WORKDIR /app/data_ingress
 
-CMD ["uvicorn", "src.web.web:app", "--host", "0.0.0.0", "--port", "8000"]
+RUN sed -i 's/\r$//' entrypoint.sh && chmod +x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
