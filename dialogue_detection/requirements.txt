@@ -1,0 +1,7 @@
+aio-pika==9.5.4
+aioboto3==15.5.0
+motor==3.6.0
+pydantic-settings==2.8.0
+whisperx @ git+https://github.com/m-bain/whisperx.git
+torch
+torchaudio

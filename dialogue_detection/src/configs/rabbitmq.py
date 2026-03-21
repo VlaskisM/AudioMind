@@ -7,8 +7,8 @@ class RabbitMQSettings(BaseSettings):
     RABBITMQ_PORT: int
     RABBITMQ_USER: str
     RABBITMQ_PASSWORD: str
-    RABBITMQ_QUEUE: str
     DIARIZATION_QUEUE: str
+    NEXT_QUEUE: str
 
     @property
     def url(self) -> str:

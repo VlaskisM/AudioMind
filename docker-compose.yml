@@ -92,6 +92,23 @@ services:
       - minio
       - mongodb
 
+  dialogue_detection:
+    build:
+      context: .
+      dockerfile: dialogue_detection/Dockerfile
+    container_name: speechmate-dialogue-detection
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RABBITMQ_HOST: speechmate-rabbitmq
+      S3_ENDPOINT: http://speechmate-minio:9000
+      MONGO_HOST: speechmate-mongodb
+    depends_on:
+      - rabbitmq
+      - minio
+      - mongodb
+
 volumes:
   postgres_data:
   minio_data:
