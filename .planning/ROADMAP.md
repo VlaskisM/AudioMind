@@ -84,6 +84,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-22 |
-| 2. Core Analysis | 0/0 | Not started | - |
+| 2. Core Analysis | 1/2 | In progress | - |
 | 3. FAQ | 0/0 | Not started | - |
 | 4. Chat with Transcript | 0/0 | Not started | - |

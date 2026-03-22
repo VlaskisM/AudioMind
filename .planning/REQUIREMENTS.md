@@ -15,14 +15,14 @@ Requirements for milestone v1.0 — LLM Analysis Service.
 
 - [x] **INFR-01**: LLM analysis service запускается как отдельный FastAPI-микросервис в Docker
 - [x] **INFR-02**: Сервис корректно обрабатывает транскрипции длиннее 60 минут (chunking)
-- [ ] **INFR-03**: Повторный запрос анализа возвращает кэшированный результат из MongoDB
+- [x] **INFR-03**: Повторный запрос анализа возвращает кэшированный результат из MongoDB
 - [x] **INFR-04**: Результаты анализа привязаны к конкретным спикерам из диаризации
 
 ### Анализ (ANLZ)
 
-- [ ] **ANLZ-01**: Пользователь получает краткое содержание (summary) записи
-- [ ] **ANLZ-02**: Пользователь получает список ключевых тезисов
-- [ ] **ANLZ-03**: Пользователь получает action items с указанием ответственных
+- [x] **ANLZ-01**: Пользователь получает краткое содержание (summary) записи
+- [x] **ANLZ-02**: Пользователь получает список ключевых тезисов
+- [x] **ANLZ-03**: Пользователь получает action items с указанием ответственных
 - [ ] **ANLZ-04**: Пользователь получает FAQ по материалу записи
 - [ ] **ANLZ-05**: Каждый тип анализа доступен через отдельный API эндпоинт
 
@@ -77,11 +77,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-01 | Phase 1: Foundation | Complete |
 | INFR-02 | Phase 1: Foundation | Complete |
 | INFR-04 | Phase 1: Foundation | Complete |
-| ANLZ-01 | Phase 2: Core Analysis | Pending |
-| ANLZ-02 | Phase 2: Core Analysis | Pending |
-| ANLZ-03 | Phase 2: Core Analysis | Pending |
+| ANLZ-01 | Phase 2: Core Analysis | Complete |
+| ANLZ-02 | Phase 2: Core Analysis | Complete |
+| ANLZ-03 | Phase 2: Core Analysis | Complete |
 | ANLZ-05 | Phase 2: Core Analysis | Pending |
-| INFR-03 | Phase 2: Core Analysis | Pending |
+| INFR-03 | Phase 2: Core Analysis | Complete |
 | ANLZ-04 | Phase 3: FAQ | Pending |
 | CHAT-01 | Phase 4: Chat with Transcript | Pending |
 | CHAT-02 | Phase 4: Chat with Transcript | Pending |
