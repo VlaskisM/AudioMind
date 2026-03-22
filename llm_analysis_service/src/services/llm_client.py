@@ -128,6 +128,26 @@ class LLMClient:
             )
         return message.parsed
 
+    async def chat_structured(
+        self,
+        messages: list[dict],
+        response_format: type[BaseModel],
+    ) -> BaseModel:
+        """Вызов LLM с multi-turn messages и structured output."""
+        completion = await self._client.beta.chat.completions.parse(
+            model=self._model,
+            temperature=self._temperature,
+            max_tokens=self._max_tokens,
+            messages=messages,
+            response_format=response_format,
+        )
+        message = completion.choices[0].message
+        if message.refusal:
+            raise RuntimeError(f"LLM refused: {message.refusal}")
+        if message.parsed is None:
+            raise RuntimeError("LLM returned empty parsed response")
+        return message.parsed
+
     async def map_reduce_structured(
         self,
         chunks: list[list[dict]],
