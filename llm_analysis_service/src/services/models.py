@@ -36,3 +36,17 @@ class ActionItemsResult(BaseModel):
     """Structured output для action items."""
 
     action_items: list[ActionItem]
+
+
+# --- FAQ ---
+class FaqItem(BaseModel):
+    """Одна пара вопрос-ответ из FAQ."""
+
+    question: str  # Конкретный вопрос по содержанию записи
+    answer: str  # Ответ на основе транскрипции
+
+
+class FaqResult(BaseModel):
+    """Structured output для FAQ."""
+
+    faq: list[FaqItem]
