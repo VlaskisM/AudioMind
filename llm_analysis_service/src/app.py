@@ -8,10 +8,12 @@ from llm_analysis_service.src.db.mongodb import (
     MongoDBClient,
     DiarizationReader,
     AnalysisRepository,
+    ChatSessionRepository,
 )
 from llm_analysis_service.src.services.chunking import ChunkingService
 from llm_analysis_service.src.services.llm_client import LLMClient
 from llm_analysis_service.src.services.analysis import AnalysisService
+from llm_analysis_service.src.services.chat import ChatService
 
 
 @asynccontextmanager
@@ -48,6 +50,18 @@ async def lifespan(app: FastAPI):
     )
 
     app.state.analysis_service = analysis_service
+
+    chat_repo = ChatSessionRepository(client=mongodb_client)
+    await chat_repo.ensure_indexes()
+
+    chat_service = ChatService(
+        chat_repo=chat_repo,
+        diarization_reader=diarization_reader,
+        chunking_service=chunking_service,
+        llm_client=llm_client,
+    )
+
+    app.state.chat_service = chat_service
 
     yield
 
