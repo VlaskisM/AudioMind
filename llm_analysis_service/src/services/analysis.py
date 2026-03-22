@@ -8,6 +8,7 @@ from llm_analysis_service.src.services.models import (
     SummaryResult,
     KeyPointsResult,
     ActionItemsResult,
+    FaqResult,
 )
 from llm_analysis_service.src.services.prompts import (
     SUMMARY_MAP_PROMPT,
@@ -16,6 +17,8 @@ from llm_analysis_service.src.services.prompts import (
     KEY_POINTS_REDUCE_PROMPT,
     ACTION_ITEMS_MAP_PROMPT,
     ACTION_ITEMS_REDUCE_PROMPT,
+    FAQ_MAP_PROMPT,
+    FAQ_REDUCE_PROMPT,
 )
 
 
@@ -70,6 +73,17 @@ class AnalysisService:
             map_prompt=ACTION_ITEMS_MAP_PROMPT,
             reduce_prompt=ACTION_ITEMS_REDUCE_PROMPT,
             result_type=ActionItemsResult,
+        )
+        return result  # type: ignore[return-value]
+
+    async def get_faq(self, recording_id: int) -> FaqResult:
+        """Получить FAQ по содержанию записи."""
+        result = await self._run_analysis(
+            recording_id=recording_id,
+            analysis_type="faq",
+            map_prompt=FAQ_MAP_PROMPT,
+            reduce_prompt=FAQ_REDUCE_PROMPT,
+            result_type=FaqResult,
         )
         return result  # type: ignore[return-value]
 

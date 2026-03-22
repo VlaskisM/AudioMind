@@ -4,6 +4,7 @@ from llm_analysis_service.src.services.models import (
     SummaryResult,
     KeyPointsResult,
     ActionItemsResult,
+    FaqResult,
 )
 
 
@@ -26,3 +27,10 @@ class ActionItemsResponse(BaseModel):
 
     status: str
     data: ActionItemsResult
+
+
+class FaqResponse(BaseModel):
+    """Response schema для POST /analysis/{recording_id}/faq."""
+
+    status: str
+    data: FaqResult
