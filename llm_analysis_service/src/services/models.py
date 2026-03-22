@@ -50,3 +50,11 @@ class FaqResult(BaseModel):
     """Structured output для FAQ."""
 
     faq: list[FaqItem]
+
+
+# --- Chat ---
+class ChatAnswer(BaseModel):
+    """Structured output для ответа чата по транскрипции."""
+
+    answer: str  # Полный ответ на вопрос
+    quote: str  # Дословная цитата из транскрипции (пустая если нет ответа)
