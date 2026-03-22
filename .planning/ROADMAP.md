@@ -71,10 +71,11 @@ Plans:
   1. Пользователь задаёт вопрос по записи и получает ответ с цитатой из транскрипции
   2. История чат-сессии сохраняется в MongoDB и доступна при следующем обращении
   3. Чат корректно работает с длинными транскрипциями (контекст не превышает лимит модели)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
+- [ ] 04-01-PLAN.md — ChatAnswer модель, system prompt, chat_structured() в LLMClient, ChatSessionRepository, ChatService с token budget
+- [ ] 04-02-PLAN.md — Chat schemas, routes, dependency injection, lifespan wiring, router registration
 
 ## Progress
 

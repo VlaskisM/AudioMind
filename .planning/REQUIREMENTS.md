@@ -28,8 +28,8 @@ Requirements for milestone v1.0 — LLM Analysis Service.
 
 ### Чат (CHAT)
 
-- [ ] **CHAT-01**: Пользователь может задать вопрос по записи и получить ответ с цитатой
-- [ ] **CHAT-02**: История чат-сессии сохраняется в MongoDB
+- [x] **CHAT-01**: Пользователь может задать вопрос по записи и получить ответ с цитатой
+- [x] **CHAT-02**: История чат-сессии сохраняется в MongoDB
 
 ## v2 Requirements
 
@@ -83,8 +83,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANLZ-05 | Phase 2: Core Analysis | Complete |
 | INFR-03 | Phase 2: Core Analysis | Complete |
 | ANLZ-04 | Phase 3: FAQ | Complete |
-| CHAT-01 | Phase 4: Chat with Transcript | Pending |
-| CHAT-02 | Phase 4: Chat with Transcript | Pending |
+| CHAT-01 | Phase 4: Chat with Transcript | Complete |
+| CHAT-02 | Phase 4: Chat with Transcript | Complete |
 
 **Coverage:**
 - v1 requirements: 12 total
