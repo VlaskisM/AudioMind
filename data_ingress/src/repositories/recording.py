@@ -15,7 +15,7 @@ class AbstractRecordingRepository(ABC):
         ...
 
     @abstractmethod
-    async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
+    async def create(self, ts: int, file_url: str, user_id: int) -> Recording:
         ...
 
     @abstractmethod
@@ -28,10 +28,6 @@ class AbstractRecordingRepository(ABC):
 
     @abstractmethod
     async def get_by_user_id(self, user_id: int) -> list[Recording]:
-        ...
-
-    @abstractmethod
-    async def get_by_badge_id(self, badge_id: str) -> list[Recording]:
         ...
 
     @abstractmethod
