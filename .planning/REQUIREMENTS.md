@@ -23,7 +23,7 @@ Requirements for milestone v1.0 — LLM Analysis Service.
 - [x] **ANLZ-01**: Пользователь получает краткое содержание (summary) записи
 - [x] **ANLZ-02**: Пользователь получает список ключевых тезисов
 - [x] **ANLZ-03**: Пользователь получает action items с указанием ответственных
-- [ ] **ANLZ-04**: Пользователь получает FAQ по материалу записи
+- [x] **ANLZ-04**: Пользователь получает FAQ по материалу записи
 - [x] **ANLZ-05**: Каждый тип анализа доступен через отдельный API эндпоинт
 
 ### Чат (CHAT)
@@ -82,7 +82,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANLZ-03 | Phase 2: Core Analysis | Complete |
 | ANLZ-05 | Phase 2: Core Analysis | Complete |
 | INFR-03 | Phase 2: Core Analysis | Complete |
-| ANLZ-04 | Phase 3: FAQ | Pending |
+| ANLZ-04 | Phase 3: FAQ | Complete |
 | CHAT-01 | Phase 4: Chat with Transcript | Pending |
 | CHAT-02 | Phase 4: Chat with Transcript | Pending |
 
