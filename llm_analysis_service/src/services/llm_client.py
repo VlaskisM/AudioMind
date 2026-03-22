@@ -1,4 +1,5 @@
 from openai import AsyncOpenAI
+from pydantic import BaseModel
 
 
 class LLMClient:
@@ -15,6 +16,11 @@ class LLMClient:
         self._model = model
         self._temperature = temperature
         self._max_tokens = max_tokens
+
+    @property
+    def model(self) -> str:
+        """Имя модели (нужно для записи в кэш)."""
+        return self._model
 
     async def complete(self, system_prompt: str, user_content: str) -> str:
         """Один вызов LLM. Возвращает текстовый ответ."""
@@ -95,6 +101,88 @@ class LLMClient:
         """
         lines = [f'{turn["speaker"]}: {turn["text"]}' for turn in chunk]
         return "\n".join(lines)
+
+    async def complete_structured(
+        self,
+        system_prompt: str,
+        user_content: str,
+        response_format: type[BaseModel],
+    ) -> BaseModel:
+        """Вызов LLM с structured output. Возвращает Pydantic-модель."""
+        completion = await self._client.beta.chat.completions.parse(
+            model=self._model,
+            temperature=self._temperature,
+            max_tokens=self._max_tokens,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_content},
+            ],
+            response_format=response_format,
+        )
+        message = completion.choices[0].message
+        if message.refusal:
+            raise RuntimeError(f"LLM refused: {message.refusal}")
+        if message.parsed is None:
+            raise RuntimeError(
+                "LLM returned empty parsed response (возможно max_tokens слишком мал)"
+            )
+        return message.parsed
+
+    async def map_reduce_structured(
+        self,
+        chunks: list[list[dict]],
+        map_prompt: str,
+        reduce_prompt: str,
+        result_type: type[BaseModel],
+    ) -> BaseModel:
+        """
+        Map-reduce с structured output на reduce-шаге.
+
+        Map phase: plain text через complete() (промежуточные результаты).
+        Reduce phase: structured output через complete_structured().
+        Один чанк: сразу complete_structured() без reduce.
+        """
+        total = len(chunks)
+
+        # Один чанк — сразу structured output
+        if total == 1:
+            formatted = self._format_chunk(chunks[0])
+            return await self.complete_structured(
+                map_prompt, formatted, result_type
+            )
+
+        # Map phase: plain text (промежуточные результаты)
+        partial_results: list[str] = []
+        running_summary = ""
+
+        for i, chunk in enumerate(chunks, start=1):
+            formatted = self._format_chunk(chunk)
+
+            context_parts = [f"Часть {i} из {total}."]
+            if running_summary:
+                context_parts.append(
+                    f"Краткое содержание предыдущих частей: {running_summary}"
+                )
+            user_content = "\n".join(context_parts) + "\n\n" + formatted
+
+            result = await self.complete(map_prompt, user_content)
+            partial_results.append(result)
+
+            # Running summary для следующего чанка
+            if i < total:
+                summary_prompt = (
+                    "Сформулируй краткое содержание следующего текста в 2-3 предложениях. "
+                    "Сохрани ключевые темы и упомянутых спикеров."
+                )
+                running_summary = await self.complete(summary_prompt, result)
+
+        # Reduce phase: structured output
+        combined = "\n\n---\n\n".join(
+            f"Часть {i}: {r}" for i, r in enumerate(partial_results, start=1)
+        )
+        return await self.complete_structured(
+            reduce_prompt, combined, result_type
+        )
 
     async def close(self) -> None:
         """Закрытие HTTP-клиента."""
