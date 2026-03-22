@@ -12,7 +12,7 @@
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Скелет сервиса, LLM-клиент, chunking, TranscriptionReader, очистка badge_id
+- [x] **Phase 1: Foundation** - Скелет сервиса, LLM-клиент, chunking, TranscriptionReader, очистка badge_id (completed 2026-03-22)
 - [ ] **Phase 2: Core Analysis** - Summary, тезисы, action items, кэширование, API эндпоинты
 - [ ] **Phase 3: FAQ** - Генерация FAQ по материалу записи
 - [ ] **Phase 4: Chat with Transcript** - Свободный чат по записи с историей сессий
@@ -83,7 +83,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Planned | - |
+| 1. Foundation | 3/3 | Complete   | 2026-03-22 |
 | 2. Core Analysis | 0/0 | Not started | - |
 | 3. FAQ | 0/0 | Not started | - |
 | 4. Chat with Transcript | 0/0 | Not started | - |

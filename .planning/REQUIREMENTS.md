@@ -14,9 +14,9 @@ Requirements for milestone v1.0 — LLM Analysis Service.
 ### Инфраструктура (INFR)
 
 - [x] **INFR-01**: LLM analysis service запускается как отдельный FastAPI-микросервис в Docker
-- [ ] **INFR-02**: Сервис корректно обрабатывает транскрипции длиннее 60 минут (chunking)
+- [x] **INFR-02**: Сервис корректно обрабатывает транскрипции длиннее 60 минут (chunking)
 - [ ] **INFR-03**: Повторный запрос анализа возвращает кэшированный результат из MongoDB
-- [ ] **INFR-04**: Результаты анализа привязаны к конкретным спикерам из диаризации
+- [x] **INFR-04**: Результаты анализа привязаны к конкретным спикерам из диаризации
 
 ### Анализ (ANLZ)
 
@@ -75,8 +75,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | CLEAN-01 | Phase 1: Foundation | Complete |
 | INFR-01 | Phase 1: Foundation | Complete |
-| INFR-02 | Phase 1: Foundation | Pending |
-| INFR-04 | Phase 1: Foundation | Pending |
+| INFR-02 | Phase 1: Foundation | Complete |
+| INFR-04 | Phase 1: Foundation | Complete |
 | ANLZ-01 | Phase 2: Core Analysis | Pending |
 | ANLZ-02 | Phase 2: Core Analysis | Pending |
 | ANLZ-03 | Phase 2: Core Analysis | Pending |
