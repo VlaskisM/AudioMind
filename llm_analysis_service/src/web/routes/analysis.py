@@ -5,6 +5,7 @@ from llm_analysis_service.src.web.schemas.analysis import (
     SummaryResponse,
     KeyPointsResponse,
     ActionItemsResponse,
+    FaqResponse,
 )
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
@@ -45,6 +46,18 @@ async def get_action_items(recording_id: int, request: Request) -> ActionItemsRe
     try:
         result = await _get_service(request).get_action_items(recording_id)
         return ActionItemsResponse(status="ok", data=result)
+    except AnalysisError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
+
+@router.post("/{recording_id}/faq", response_model=FaqResponse)
+async def get_faq(recording_id: int, request: Request) -> FaqResponse:
+    """Получить FAQ по содержанию записи."""
+    try:
+        result = await _get_service(request).get_faq(recording_id)
+        return FaqResponse(status="ok", data=result)
     except AnalysisError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:
