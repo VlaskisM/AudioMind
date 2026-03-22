@@ -45,11 +45,11 @@ Plans:
   3. Пользователь получает action items с указанием ответственных спикеров через POST-запрос к API
   4. Повторный запрос того же анализа возвращает кэшированный результат из MongoDB без вызова LLM
   5. Каждый тип анализа доступен через отдельный API эндпоинт
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Pydantic-модели structured outputs, промпты, LLMClient extension, AnalysisRepository для кэширования
+- [ ] 02-02-PLAN.md — AnalysisService, FastAPI lifespan, POST-эндпоинты анализа, wiring
 
 ### Phase 3: FAQ
 **Goal**: Пользователь получает автоматически сгенерированный FAQ по материалу записи
