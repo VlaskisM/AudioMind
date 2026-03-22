@@ -58,10 +58,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Пользователь получает FAQ (вопрос-ответ пары) по содержанию записи через API
   2. FAQ-результат кэшируется и повторный запрос не вызывает LLM
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — FaqItem/FaqResult модели, промпты FAQ map/reduce, get_faq() в AnalysisService, FaqResponse schema, POST endpoint
 
 ### Phase 4: Chat with Transcript
 **Goal**: Пользователь ведёт свободный диалог с LLM по контексту записи, получает ответы с цитатами, история сохраняется
