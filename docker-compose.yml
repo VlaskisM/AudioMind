@@ -109,6 +109,19 @@ services:
       - minio
       - mongodb
 
+  llm_analysis:
+    build: ./llm_analysis_service
+    container_name: speechmate-llm-analysis
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: speechmate-mongodb
+    ports:
+      - "8003:8003"
+    depends_on:
+      - mongodb
+
 volumes:
   postgres_data:
   minio_data:
