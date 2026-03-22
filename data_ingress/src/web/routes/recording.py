@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, UploadFile, File, status
 
 from src.db.uow import UnitOfWork
 from src.services.recording import RecordingService
@@ -24,8 +24,20 @@ async def list_recordings():
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=RecordingResponse)
 async def create_recording(body: RecordingCreate):
     recording = await service.create_recording(
-        badge_id=body.badge_id,
         file_url=body.file_url,
         user_id=body.user_id,
+    )
+    return mapper.to_response(recording)
+
+
+@router.post("/upload", status_code=status.HTTP_201_CREATED, response_model=RecordingResponse)
+async def upload_recording(
+    user_id: int,
+    file: UploadFile = File(...),
+):
+    recording = await service.upload_and_create_recording(
+        user_id=user_id,
+        file_obj=file.file,
+        original_filename=file.filename,
     )
     return mapper.to_response(recording)
