@@ -15,9 +15,8 @@ class RecordingRepository(AbstractRecordingRepository):
         await self.session.flush()
         return recording.id
 
-    async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
+    async def create(self, ts: int, file_url: str, user_id: int) -> Recording:
         recording = Recording(
-            badge_id=badge_id,
             ts=ts,
             file_url=file_url,
             user_id=user_id,
@@ -35,12 +34,6 @@ class RecordingRepository(AbstractRecordingRepository):
     async def get_by_user_id(self, user_id: int) -> list[Recording]:
         result = await self.session.execute(
             select(Recording).where(Recording.user_id == user_id)
-        )
-        return list(result.scalars().all())
-
-    async def get_by_badge_id(self, badge_id: str) -> list[Recording]:
-        result = await self.session.execute(
-            select(Recording).where(Recording.badge_id == badge_id)
         )
         return list(result.scalars().all())
 

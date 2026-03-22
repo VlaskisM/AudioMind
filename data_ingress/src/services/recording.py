@@ -12,7 +12,6 @@ class RecordingService:
 
     async def upload_and_create_recording(
         self,
-        badge_id: str,
         user_id: int,
         file_obj: BinaryIO,
         original_filename: str,
@@ -23,7 +22,6 @@ class RecordingService:
             file_url = await uow.get_file_url(file_key)
             recording = await self._create_recording(
                 uow,
-                badge_id=badge_id,
                 file_url=file_url,
                 user_id=user_id,
             )
@@ -31,11 +29,10 @@ class RecordingService:
             await uow.commit()
             return recording
 
-    async def create_recording(self, badge_id: str, file_url: str, user_id: int) -> Recording:
+    async def create_recording(self, file_url: str, user_id: int) -> Recording:
         async with self._uow_factory() as uow:
             recording = await self._create_recording(
                 uow,
-                badge_id=badge_id,
                 file_url=file_url,
                 user_id=user_id,
             )
@@ -47,9 +44,8 @@ class RecordingService:
             return await uow.recordings.get_all()
 
     @staticmethod
-    async def _create_recording(uow, badge_id: str, file_url: str, user_id: int) -> Recording:
+    async def _create_recording(uow, file_url: str, user_id: int) -> Recording:
         recording = Recording(
-            badge_id=badge_id,
             ts=int(datetime.now().timestamp()),
             file_url=file_url,
             user_id=user_id,
