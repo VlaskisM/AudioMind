@@ -1,76 +1,67 @@
-# Stack Research: LLM Analysis Service
+# Stack Research: Speechmate v1.1 — Web Frontend
 
-**Domain:** LLM-powered transcription analysis
-**Date:** 2026-03-22
-**Context:** Adding LLM analysis service to existing Speechmate platform (Python async, FastAPI, MongoDB, RabbitMQ)
+**Domain:** React SPA for audio analysis platform
+**Date:** 2026-03-24
+**Context:** Adding web frontend to existing Speechmate platform (4 Python microservices)
 
-## Core LLM Integration
+## New Libraries Required
 
 | Library | Version | Purpose | Confidence |
 |---------|---------|---------|------------|
-| `openai` | ^1.x | OpenAI Python SDK — async client, structured outputs, chat completions | High |
-| `tiktoken` | ^0.7 | Token counting для OpenAI моделей — контроль лимитов, chunking | High |
-| `pydantic` | ^2.x | Structured output validation, response schemas | High (уже в проекте) |
+| React + TypeScript | ^19 + ^5.5 | UI framework — зафиксировано в PROJECT.md | High |
+| Vite | ^6 | Build tool, dev server с proxy к FastAPI | High |
+| shadcn/ui + Tailwind CSS | latest CLI + ^4 | Component library (Radix UI primitives) | High |
+| TanStack Query | ^5 | Server state, polling через `refetchInterval`, кэш | High |
+| Axios | ^1.7 | HTTP-клиент к двум сервисам (data_ingress + llm_analysis) | High |
+| Zustand | ^4.5 | UI state: выбранная запись, панели, sidebar | High |
+| react-dropzone | ^14 | Drag & drop загрузка аудио | High |
+| react-markdown | ^9 | Рендер LLM-ответов (markdown в чате) | Medium |
+| React Router | ^6.26 | Маршрутизация: `/`, `/recordings/:id/processing`, `/recordings/:id` | High |
 
-### OpenAI SDK
+## What NOT to Add
 
-**Почему openai ^1.x:**
-- Нативный async client (`AsyncOpenAI`) — совместим с текущим asyncio стеком
-- `response_format` с JSON mode — гарантированный структурированный вывод
-- Structured Outputs с Pydantic моделями — type-safe ответы
-- Встроенный retry с exponential backoff
-- Streaming поддержка для чата
-
-**Модели:**
-- `gpt-4o-mini` — основная модель для summary, тезисов, action items, FAQ (баланс цена/качество)
-- `gpt-4o` — для сложных задач (чат, длинные транскрипции) если нужна точность
-
-### Что НЕ использовать
-
-| Library | Причина |
+| Library | Why Not |
 |---------|---------|
-| `langchain` | Избыточная абстракция для нашего случая — прямой OpenAI SDK проще и прозрачнее |
-| `llama-index` | Ориентирован на RAG с векторными БД — не нужен для анализа отдельных транскрипций |
-| `semantic-kernel` | Microsoft-экосистема, лишняя зависимость |
-| Собственные обёртки над HTTP | OpenAI SDK уже всё делает — retry, streaming, typing |
+| Next.js | SPA достаточно, SSR не нужен для внутреннего инструмента |
+| Redux / MobX | Zustand покрывает нужды, Redux — overkill для этого масштаба |
+| WebSocket libs | Polling выбран осознанно (проще, достаточно для статуса транскрипции) |
+| Formik / react-hook-form | Одна форма загрузки — shadcn Input достаточно |
+| Storybook | Не нужен на этом этапе |
+| i18n | Один язык пока |
+| SWR | TanStack Query мощнее — polling, mutations, devtools |
 
-## Prompt Management
+## Integration Points
 
-| Library | Version | Purpose | Confidence |
-|---------|---------|---------|------------|
-| `jinja2` | ^3.x | Шаблонизация промптов с переменными | High |
-
-**Подход:** Промпты как Jinja2 шаблоны в отдельной директории (`src/prompts/`). Версионирование через имена файлов или git.
-
-**Почему не:**
-- Специализированные prompt frameworks (promptflow, guidance) — оверинжиниринг для 4-5 типов промптов
-- Хардкод в коде — промпты итерируются в 10-100x быстрее кода
-
-## Web Framework & Infrastructure
-
-| Library | Version | Purpose | Confidence |
-|---------|---------|---------|------------|
-| `fastapi` | ^0.110 | HTTP API — совместимо с существующим data_ingress | High (уже в проекте) |
-| `motor` | ^3.x | Async MongoDB driver | High (уже в проекте) |
-| `pydantic-settings` | ^2.x | Конфигурация через env vars | High (уже в проекте) |
-
-## Переиспользование из существующих сервисов
-
-Из текущей кодовой базы переиспользуются паттерны:
-- MongoDB repository pattern (из transcription_service)
-- Pydantic-settings конфигурация
-- Docker-compose интеграция
-- Структура проекта (src/services, src/repositories, src/db)
-
-## Новые зависимости (только для LLM-сервиса)
-
-```
-openai>=1.0
-tiktoken>=0.7
-jinja2>=3.0
+### Vite Dev Proxy
+```js
+// vite.config.ts
+proxy: {
+  '/api/ingress': { target: 'http://localhost:8001' },
+  '/api/analysis': { target: 'http://localhost:8003' }
+}
 ```
 
-Всё остальное уже есть в экосистеме проекта.
+### TanStack Query — Polling
+```ts
+useQuery({
+  queryKey: ['recording-status', id],
+  queryFn: () => getRecordingStatus(id),
+  refetchInterval: (data) => data?.status === 'ready' ? false : 3000
+})
+```
+
+### Axios Instances
+Два отдельных инстанса с разными baseURL для data_ingress и llm_analysis_service.
+
+### CORS
+Настроить `CORSMiddleware` на обоих FastAPI сервисах для `http://localhost:5173` (Vite dev) и production origin.
+
+## Warnings
+
+- **Tailwind v4** вышел в феврале 2025 — проверить совместимость shadcn/ui CLI с v4 перед инициализацией
+- **shadcn/ui** — не npm-пакет, а CLI-генератор: компоненты копируются в проект (`npx shadcn@latest add button`)
+- **React 19** — проверить совместимость всех библиотек; если проблемы — откатиться на 18
 
 ---
 *Confidence levels: High = proven in production, Medium = good evidence, Low = experimental*
+*Researched: 2026-03-24*
