@@ -49,7 +49,7 @@ Plans:
 **Milestone Goal:** Веб-интерфейс в стиле ChatGPT для работы с аудиозаписями — загрузка, ожидание транскрипции, чат по записи, панель быстрых анализов, просмотр транскрипции.
 
 - [x] **Phase 5: Backend API** - Эндпоинты статуса, списка записей и транскрипции + CORS (completed 2026-03-24)
-- [ ] **Phase 6: Frontend Scaffold** - React + Vite + shadcn/ui проект с routing и API layer
+- [x] **Phase 6: Frontend Scaffold** - React + Vite + shadcn/ui проект с routing и API layer (completed 2026-03-24)
 - [ ] **Phase 7: Upload & Processing** - Загрузка аудио и экран ожидания обработки
 - [ ] **Phase 8: Workspace** - Сайдбар + чат + анализы + транскрипция
 
@@ -79,10 +79,10 @@ Plans:
   1. Приложение запускается в Docker и открывается в браузере на localhost
   2. Переход по URL `/`, `/recordings/:id/processing`, `/recordings/:id` отображает соответствующие страницы-заглушки
   3. API-вызовы с фронтенда проксируются к data_ingress и llm_analysis_service без ручной настройки URL
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 06-01: TBD
+- [x] 06-01: Vite + React + shadcn/ui проект, routing, API layer с proxy, Docker
 
 ### Phase 7: Upload & Processing
 **Goal**: Пользователь может загрузить аудиофайл и дождаться готовности записи — первый полный user journey от входа до workspace
@@ -128,7 +128,7 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 2. Core Analysis | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 3. FAQ | v1.0 | 1/1 | Complete | 2026-03-22 |
 | 4. Chat with Transcript | v1.0 | 2/2 | Complete | 2026-03-22 |
-| 5. Backend API | 2/2 | Complete   | 2026-03-24 | - |
-| 6. Frontend Scaffold | v1.1 | 0/? | Not started | - |
+| 5. Backend API | v1.1 | 2/2 | Complete | 2026-03-24 |
+| 6. Frontend Scaffold | v1.1 | 1/1 | Complete | 2026-03-24 |
 | 7. Upload & Processing | v1.1 | 0/? | Not started | - |
 | 8. Workspace | v1.1 | 0/? | Not started | - |
