@@ -49,6 +49,7 @@ async def lifespan(app: FastAPI):
         llm_client=llm_client,
     )
 
+    app.state.diarization_reader = diarization_reader
     app.state.analysis_service = analysis_service
 
     chat_repo = ChatSessionRepository(client=mongodb_client)
