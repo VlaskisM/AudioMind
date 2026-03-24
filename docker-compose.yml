@@ -87,10 +87,12 @@ services:
       RABBITMQ_HOST: speechmate-rabbitmq
       S3_ENDPOINT: http://speechmate-minio:9000
       MONGO_HOST: speechmate-mongodb
+      DATA_INGRESS_URL: http://speechmate-app:8000
     depends_on:
       - rabbitmq
       - minio
       - mongodb
+      - app
 
   dialogue_detection:
     build:
@@ -104,10 +106,12 @@ services:
       RABBITMQ_HOST: speechmate-rabbitmq
       S3_ENDPOINT: http://speechmate-minio:9000
       MONGO_HOST: speechmate-mongodb
+      DATA_INGRESS_URL: http://speechmate-app:8000
     depends_on:
       - rabbitmq
       - minio
       - mongodb
+      - app
 
   llm_analysis:
     build: ./llm_analysis_service
