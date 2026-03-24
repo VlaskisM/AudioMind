@@ -5,6 +5,15 @@ from typing import BinaryIO
 from src.db.relational.entities.recording import Recording
 
 
+ALLOWED_TRANSITIONS: dict[str, set[str]] = {
+    "uploaded": {"transcribing"},
+    "transcribing": {"diarizing", "failed"},
+    "diarizing": {"ready", "failed"},
+    "failed": set(),
+    "ready": set(),
+}
+
+
 class RecordingService:
 
     def __init__(self, uow_factory):
@@ -24,6 +33,7 @@ class RecordingService:
                 uow,
                 file_url=file_url,
                 user_id=user_id,
+                original_filename=original_filename,
             )
             uow.publish(recording.id, file_key)
             await uow.commit()
@@ -43,12 +53,40 @@ class RecordingService:
         async with self._uow_factory() as uow:
             return await uow.recordings.get_all()
 
+    async def get_recording_status(self, recording_id: int) -> Recording | None:
+        async with self._uow_factory() as uow:
+            return await uow.recordings.get_by_id(recording_id)
+
+    async def get_recordings_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+        async with self._uow_factory() as uow:
+            return await uow.recordings.get_page(offset, limit)
+
+    async def update_recording_status(
+        self, recording_id: int, status: str, error_message: str | None = None
+    ) -> Recording | None:
+        async with self._uow_factory() as uow:
+            existing = await uow.recordings.get_by_id(recording_id)
+            if existing is None:
+                return None
+            allowed = ALLOWED_TRANSITIONS.get(existing.status, set())
+            if status not in allowed:
+                raise ValueError(
+                    f"Invalid status transition: '{existing.status}' -> '{status}'. "
+                    f"Allowed: {allowed or 'none (terminal state)'}"
+                )
+            recording = await uow.recordings.update_status(recording_id, status, error_message)
+            await uow.commit()
+            return recording
+
     @staticmethod
-    async def _create_recording(uow, file_url: str, user_id: int) -> Recording:
+    async def _create_recording(
+        uow, file_url: str, user_id: int, original_filename: str | None = None
+    ) -> Recording:
         recording = Recording(
             ts=int(datetime.now().timestamp()),
             file_url=file_url,
             user_id=user_id,
+            original_filename=original_filename,
         )
         await uow.recordings.add(recording)
         return recording

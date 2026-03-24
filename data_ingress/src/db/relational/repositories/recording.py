@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.relational.entities.recording import Recording
@@ -43,3 +43,25 @@ class RecordingRepository(AbstractRecordingRepository):
             return False
         await self.session.delete(recording)
         return True
+
+    async def get_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+        count_result = await self.session.execute(
+            select(func.count()).select_from(Recording)
+        )
+        total = count_result.scalar_one()
+
+        items_result = await self.session.execute(
+            select(Recording).order_by(Recording.ts.desc()).offset(offset).limit(limit)
+        )
+        items = list(items_result.scalars().all())
+        return items, total
+
+    async def update_status(self, recording_id: int, status: str, error_message: str | None = None) -> Recording | None:
+        recording = await self.get_by_id(recording_id)
+        if recording is None:
+            return None
+        recording.status = status
+        if error_message is not None:
+            recording.error_message = error_message
+        await self.session.flush()
+        return recording
