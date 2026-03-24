@@ -33,3 +33,11 @@ class AbstractRecordingRepository(ABC):
     @abstractmethod
     async def delete(self, recording_id: int) -> bool:
         ...
+
+    @abstractmethod
+    async def get_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+        ...
+
+    @abstractmethod
+    async def update_status(self, recording_id: int, status: str, error_message: str | None = None) -> Recording | None:
+        ...
