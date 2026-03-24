@@ -68,7 +68,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: data_ingress — модель Recording (status/original_filename/error_message), Alembic миграция, эндпоинты статуса/списка/PATCH, CORS
+- [x] 05-01: data_ingress — модель Recording (status/original_filename/error_message), Alembic миграция, эндпоинты статуса/списка/PATCH, CORS
 - [ ] 05-02: llm_analysis_service — transcript endpoint + CORS, worker HTTP callbacks для обновления статуса
 
 ### Phase 6: Frontend Scaffold
@@ -128,7 +128,7 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 2. Core Analysis | v1.0 | 2/2 | Complete | 2026-03-22 |
 | 3. FAQ | v1.0 | 1/1 | Complete | 2026-03-22 |
 | 4. Chat with Transcript | v1.0 | 2/2 | Complete | 2026-03-22 |
-| 5. Backend API | v1.1 | 0/? | Not started | - |
+| 5. Backend API | v1.1 | 1/2 | In progress | - |
 | 6. Frontend Scaffold | v1.1 | 0/? | Not started | - |
 | 7. Upload & Processing | v1.1 | 0/? | Not started | - |
 | 8. Workspace | v1.1 | 0/? | Not started | - |

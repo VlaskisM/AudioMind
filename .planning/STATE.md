@@ -1,60 +1,39 @@
----
-gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: unknown
-last_updated: "2026-03-22T12:09:34.000Z"
-progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
----
-
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-22)
+See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Пользователь загружает аудио и получает структурированный анализ содержания через LLM
-**Current focus:** Phase 4: Chat with Transcript
+**Current focus:** Phase 5 — Backend API (v1.1 Web Frontend)
 
 ## Current Position
 
-Phase: 4 of 4 (Chat with Transcript)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Complete
-Last activity: 2026-03-22 — Completed 04-02-PLAN.md
+Phase: 5 of 8 (Backend API)
+Plan: 1 of 3 in current phase
+Status: Executing
+Last activity: 2026-03-24 — Completed 05-01 (Recording Status + Pagination + CORS)
 
-Progress: [████████████████████] 100%
+Progress: [█████████░░░░░░░░░░░] 56% (9/16 plans across v1.0+v1.1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 8 (v1.0)
+- Average duration: —
+- Total execution time: — hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
-
-**Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+| 1. Foundation | 3 | — | — |
+| 2. Core Analysis | 2 | — | — |
+| 3. FAQ | 1 | — | — |
+| 4. Chat | 2 | — | — |
+| 5. Backend API | 1 | 4min | 4min |
 
 *Updated after each plan completion*
-| Phase 01-foundation P01 | 2min | 2 tasks | 8 files |
-| Phase 01-foundation P02 | 2min | 2 tasks | 15 files |
-| Phase 01-foundation P03 | 2min | 3 tasks | 5 files |
-| Phase 02-core-analysis P01 | 2min | 2 tasks | 5 files |
-| Phase 02-core-analysis P02 | 2min | 2 tasks | 5 files |
-| Phase 03-faq P01 | 2min | 2 tasks | 5 files |
-| Phase 04-chat-with-transcript P01 | 2min | 2 tasks | 6 files |
-| Phase 04-chat-with-transcript P02 | 1min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -63,16 +42,13 @@ Progress: [████████████████████] 100%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap: CLEAN-01 (badge_id) включён в Phase 1 -- очистка до начала новой разработки
-- Roadmap: Phase 3 (FAQ) и Phase 4 (Chat) независимы друг от друга, оба зависят от Phase 2
-- [Phase 01-foundation]: Moved file upload from badge route to POST /recordings/upload
-- [Phase 01-foundation P02]: Port 8003 for llm_analysis_service, simplified Dockerfile with direct build context
-- [Phase 01-foundation P03]: Reader pattern (not Repository/UoW) for read-only MongoDB access; running summary between map-reduce chunks
-- [Phase 02-core-analysis P01]: Plain text on map phase, structured output on reduce phase only; RuntimeError for refusal/None parsed
-- [Phase 02-core-analysis P02]: app.state for service injection; AnalysisError->404, RuntimeError->502 error mapping; cache-first pipeline
-- [Phase 03-faq P01]: analysis_type="faq" (lowercase, consistent with existing types)
-- [Phase 04-chat-with-transcript P01]: Token budget 128K-4K reserve; one chat session per recording (unique index)
-- [Phase 04-chat-with-transcript P02]: BaseResponse for DELETE; shared dependency instances between AnalysisService and ChatService
+- [v1.0] UoW не нужен в transcription_service — одна атомарная запись
+- [v1.1] Frontend: React + Vite + shadcn/ui + TanStack Query + Zustand
+- [v1.1] Polling (не WebSocket) для статуса транскрипции
+- [v1.1] Без авторизации — один пользователь
+- [v1.1] Два Axios инстанса (data_ingress + llm_analysis) через Vite proxy
+- [v1.1] Status transition validation в service layer (не repository) для лучших ошибок
+- [v1.1] CORS origins через CORS_ORIGINS env var, default localhost:5173
 
 ### Pending Todos
 
@@ -80,10 +56,11 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+- [Phase 5] Механизм обновления статуса — HTTP callback vs RabbitMQ listener в data_ingress (research flag)
+- [Phase 5] Расположение transcript endpoint — data_ingress vs llm_analysis_service (research flag)
 
 ## Session Continuity
 
-Last session: 2026-03-22
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-24
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
