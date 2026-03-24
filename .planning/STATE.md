@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 ## Current Position
 
 Phase: 5 of 8 (Backend API)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing
-Last activity: 2026-03-24 — Completed 05-01 (Recording Status + Pagination + CORS)
+Last activity: 2026-03-24 — Completed 05-02 (Transcript Endpoint + Worker Status Callbacks)
 
-Progress: [█████████░░░░░░░░░░░] 56% (9/16 plans across v1.0+v1.1)
+Progress: [██████████░░░░░░░░░░] 63% (10/16 plans across v1.0+v1.1)
 
 ## Performance Metrics
 
@@ -31,7 +31,7 @@ Progress: [█████████░░░░░░░░░░░] 56% (9/
 | 2. Core Analysis | 2 | — | — |
 | 3. FAQ | 1 | — | — |
 | 4. Chat | 2 | — | — |
-| 5. Backend API | 1 | 4min | 4min |
+| 5. Backend API | 2 | 8min | 4min |
 
 *Updated after each plan completion*
 
@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - [v1.1] Два Axios инстанса (data_ingress + llm_analysis) через Vite proxy
 - [v1.1] Status transition validation в service layer (не repository) для лучших ошибок
 - [v1.1] CORS origins через CORS_ORIGINS env var, default localhost:5173
+- [v1.1] DiarizationReader в app.state для прямого DI в transcript route
+- [v1.1] Failed-status callback в try/except чтобы не маскировать оригинальную ошибку
+- [v1.1] Workers depend_on app в docker-compose для доступности callback
 
 ### Pending Todos
 
@@ -62,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-24
-Stopped at: Completed 05-01-PLAN.md
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
