@@ -36,11 +36,11 @@ Requirements for milestone v1.1 — Web Frontend.
 ### Backend API (BAPI)
 
 - [x] **BAPI-01**: Поле `status` добавлено в модель Recording с Alembic миграцией
-- [ ] **BAPI-02**: CORSMiddleware настроен на data_ingress и llm_analysis_service
+- [x] **BAPI-02**: CORSMiddleware настроен на data_ingress и llm_analysis_service
 - [x] **BAPI-03**: `GET /recordings/{id}/status` возвращает текущий статус записи
 - [x] **BAPI-04**: `GET /recordings` возвращает список записей с пагинацией
-- [ ] **BAPI-05**: `GET /recordings/{id}/transcript` возвращает диаризованную транскрипцию
-- [ ] **BAPI-06**: Статус записи обновляется при каждом событии пайплайна (uploaded → transcribing → diarizing → ready/failed)
+- [x] **BAPI-05**: `GET /recordings/{id}/transcript` возвращает диаризованную транскрипцию
+- [x] **BAPI-06**: Статус записи обновляется при каждом событии пайплайна (uploaded → transcribing → diarizing → ready/failed)
 
 ### Upload (UPLD)
 
@@ -113,11 +113,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BAPI-01 | Phase 5 | Pending |
-| BAPI-02 | Phase 5 | Pending |
+| BAPI-02 | Phase 5 | Complete |
 | BAPI-03 | Phase 5 | Pending |
 | BAPI-04 | Phase 5 | Pending |
-| BAPI-05 | Phase 5 | Pending |
-| BAPI-06 | Phase 5 | Pending |
+| BAPI-05 | Phase 5 | Complete |
+| BAPI-06 | Phase 5 | Complete |
 | SCAF-01 | Phase 6 | Pending |
 | SCAF-02 | Phase 6 | Pending |
 | SCAF-03 | Phase 6 | Pending |
