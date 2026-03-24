@@ -1,90 +1,134 @@
-# Roadmap: Speechmate v1.0 — LLM Analysis Service
+# Roadmap: Speechmate
 
-## Overview
+## Milestones
 
-Четвёртый микросервис в пайплайне Speechmate: LLM-анализ транскрипций. От скелета сервиса с инфраструктурой chunking/prompts до полноценного анализа (summary, тезисы, action items), затем FAQ, и наконец свободный чат по записи. Каждая фаза разблокирует следующую и доставляет завершённую пользовательскую возможность.
+- ✅ **v1.0 LLM Analysis Service** - Phases 1-4 (shipped 2026-03-22)
+- 🚧 **v1.1 Web Frontend** - Phases 5-8 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
-
-Decimal phases appear between their surrounding integers in numeric order.
-
-- [x] **Phase 1: Foundation** - Скелет сервиса, LLM-клиент, chunking, TranscriptionReader, очистка badge_id (completed 2026-03-22)
-- [x] **Phase 2: Core Analysis** - Summary, тезисы, action items, кэширование, API эндпоинты (completed 2026-03-22)
-- [ ] **Phase 3: FAQ** - Генерация FAQ по материалу записи
-- [x] **Phase 4: Chat with Transcript** - Свободный чат по записи с историей сессий (completed 2026-03-22)
-
-## Phase Details
+<details>
+<summary>✅ v1.0 LLM Analysis Service (Phases 1-4) - SHIPPED 2026-03-22</summary>
 
 ### Phase 1: Foundation
-**Goal**: Сервис запускается в Docker, умеет читать транскрипции из MongoDB с диаризацией, отправлять запросы в OpenAI с chunking для длинных записей, и badge_id удалён из data_ingress
-**Depends on**: Nothing (first phase)
-**Requirements**: INFR-01, INFR-02, INFR-04, CLEAN-01
-**Success Criteria** (what must be TRUE):
-  1. Сервис запускается через docker-compose и отвечает на health check
-  2. Транскрипция длиннее 60 минут корректно разбивается на чанки и обрабатывается без потери контекста
-  3. Результаты анализа содержат привязку к конкретным спикерам из диаризации
-  4. badge_id полностью удалён из модели Recording и всех связанных эндпоинтов data_ingress
+**Goal**: Скелет сервиса, LLM-клиент, chunking, TranscriptionReader, очистка badge_id
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Удаление badge_id из data_ingress (модель, schemas, routes, services, repositories, Alembic-миграция)
-- [ ] 01-02-PLAN.md — Скелет llm_analysis_service (FastAPI + Docker + конфиги OpenAI/MongoDB + health check)
-- [ ] 01-03-PLAN.md — MongoDB readers, speaker-boundary chunking, LLM-клиент с map-reduce
+- [x] 01-01: Удаление badge_id из data_ingress
+- [x] 01-02: Скелет llm_analysis_service (Docker, MongoDB, FastAPI)
+- [x] 01-03: MongoDB readers, speaker-boundary chunking, LLM-клиент
 
 ### Phase 2: Core Analysis
-**Goal**: Пользователь получает структурированный анализ записи (summary, тезисы, action items) через API с кэшированием результатов
-**Depends on**: Phase 1
-**Requirements**: ANLZ-01, ANLZ-02, ANLZ-03, ANLZ-05, INFR-03
-**Success Criteria** (what must be TRUE):
-  1. Пользователь получает краткое содержание записи через POST-запрос к API
-  2. Пользователь получает список ключевых тезисов через POST-запрос к API
-  3. Пользователь получает action items с указанием ответственных спикеров через POST-запрос к API
-  4. Повторный запрос того же анализа возвращает кэшированный результат из MongoDB без вызова LLM
-  5. Каждый тип анализа доступен через отдельный API эндпоинт
+**Goal**: Summary, тезисы, action items, кэширование, API эндпоинты
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Pydantic-модели structured outputs, промпты, LLMClient extension, AnalysisRepository для кэширования
-- [ ] 02-02-PLAN.md — AnalysisService, FastAPI lifespan, POST-эндпоинты анализа, wiring
+- [x] 02-01: Модели, промпты, AnalysisRepository
+- [x] 02-02: AnalysisService, POST-эндпоинты анализа
 
 ### Phase 3: FAQ
-**Goal**: Пользователь получает автоматически сгенерированный FAQ по материалу записи
-**Depends on**: Phase 2
-**Requirements**: ANLZ-04
-**Success Criteria** (what must be TRUE):
-  1. Пользователь получает FAQ (вопрос-ответ пары) по содержанию записи через API
-  2. FAQ-результат кэшируется и повторный запрос не вызывает LLM
+**Goal**: Генерация FAQ по материалу записи
 **Plans**: 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md — FaqItem/FaqResult модели, промпты FAQ map/reduce, get_faq() в AnalysisService, FaqResponse schema, POST endpoint
+- [x] 03-01: FAQ модели, промпты, endpoint
 
 ### Phase 4: Chat with Transcript
-**Goal**: Пользователь ведёт свободный диалог с LLM по контексту записи, получает ответы с цитатами, история сохраняется
-**Depends on**: Phase 2
-**Requirements**: CHAT-01, CHAT-02
-**Success Criteria** (what must be TRUE):
-  1. Пользователь задаёт вопрос по записи и получает ответ с цитатой из транскрипции
-  2. История чат-сессии сохраняется в MongoDB и доступна при следующем обращении
-  3. Чат корректно работает с длинными транскрипциями (контекст не превышает лимит модели)
+**Goal**: Свободный чат по записи с историей сессий
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — ChatAnswer модель, system prompt, chat_structured() в LLMClient, ChatSessionRepository, ChatService с token budget
-- [ ] 04-02-PLAN.md — Chat schemas, routes, dependency injection, lifespan wiring, router registration
+- [x] 04-01: Chat service и data layer
+- [x] 04-02: Chat web layer и интеграция
+
+</details>
+
+### 🚧 v1.1 Web Frontend (In Progress)
+
+**Milestone Goal:** Веб-интерфейс в стиле ChatGPT для работы с аудиозаписями — загрузка, ожидание транскрипции, чат по записи, панель быстрых анализов, просмотр транскрипции.
+
+- [ ] **Phase 5: Backend API** - Эндпоинты статуса, списка записей и транскрипции + CORS
+- [ ] **Phase 6: Frontend Scaffold** - React + Vite + shadcn/ui проект с routing и API layer
+- [ ] **Phase 7: Upload & Processing** - Загрузка аудио и экран ожидания обработки
+- [ ] **Phase 8: Workspace** - Сайдбар + чат + анализы + транскрипция
+
+## Phase Details
+
+### Phase 5: Backend API
+**Goal**: Бэкенд готов к интеграции с фронтендом — все эндпоинты для статуса, списка записей и транскрипции работают, CORS настроен
+**Depends on**: Phase 4 (v1.0 complete)
+**Requirements**: BAPI-01, BAPI-02, BAPI-03, BAPI-04, BAPI-05, BAPI-06
+**Success Criteria** (what must be TRUE):
+  1. Фронтенд-приложение с localhost может выполнять запросы к data_ingress и llm_analysis_service без CORS-ошибок
+  2. Клиент получает актуальный статус записи (uploaded/transcribing/diarizing/ready/failed) через GET-запрос
+  3. Клиент получает пагинированный список записей с метаданными (имя файла, дата, статус)
+  4. Клиент получает диаризованную транскрипцию записи (спикер + реплики) через GET-запрос
+  5. Статус записи автоматически обновляется при прохождении каждого этапа пайплайна
+**Plans**: 2 plans
+
+Plans:
+- [ ] 05-01: data_ingress — модель Recording (status/original_filename/error_message), Alembic миграция, эндпоинты статуса/списка/PATCH, CORS
+- [ ] 05-02: llm_analysis_service — transcript endpoint + CORS, worker HTTP callbacks для обновления статуса
+
+### Phase 6: Frontend Scaffold
+**Goal**: React SPA запускается, маршруты работают, API layer подключён к двум бэкенд-сервисам через proxy
+**Depends on**: Phase 5
+**Requirements**: SCAF-01, SCAF-02, SCAF-03
+**Success Criteria** (what must be TRUE):
+  1. Приложение запускается в Docker и открывается в браузере на localhost
+  2. Переход по URL `/`, `/recordings/:id/processing`, `/recordings/:id` отображает соответствующие страницы-заглушки
+  3. API-вызовы с фронтенда проксируются к data_ingress и llm_analysis_service без ручной настройки URL
+**Plans**: TBD
+
+Plans:
+- [ ] 06-01: TBD
+
+### Phase 7: Upload & Processing
+**Goal**: Пользователь может загрузить аудиофайл и дождаться готовности записи — первый полный user journey от входа до workspace
+**Depends on**: Phase 6
+**Requirements**: UPLD-01, UPLD-02, UPLD-03, UPLD-04
+**Success Criteria** (what must be TRUE):
+  1. Пользователь перетаскивает аудиофайл на страницу (или выбирает через file picker) и загрузка начинается
+  2. Пользователь видит progress bar во время загрузки файла на сервер
+  3. После загрузки пользователь видит экран ожидания с текущим шагом обработки (transcribing -> diarizing -> ready)
+  4. При ошибке загрузки или обработки пользователь видит понятное сообщение с возможностью повторить
+  5. После готовности записи пользователь автоматически попадает в workspace
+**Plans**: TBD
+
+Plans:
+- [ ] 07-01: TBD
+- [ ] 07-02: TBD
+
+### Phase 8: Workspace
+**Goal**: Пользователь работает с записью в полноценном интерфейсе — история записей, чат с цитатами, быстрые анализы, просмотр транскрипции
+**Depends on**: Phase 7
+**Requirements**: WRKS-01, WRKS-02, WRKS-03, WRKS-04, WRKS-05
+**Success Criteria** (what must be TRUE):
+  1. Пользователь видит список своих записей в sidebar и может переключаться между ними — контент обновляется
+  2. Пользователь вводит вопрос по записи в чат и получает ответ с цитатой из транскрипции
+  3. Пользователь нажимает кнопку анализа (summary/тезисы/action items/FAQ) и видит результат в правой панели
+  4. Пользователь просматривает диаризованную транскрипцию (спикер -> реплика) в правой панели
+  5. Трёхколоночный layout с возможностью сворачивания sidebar и правой панели
+**Plans**: TBD
+
+Plans:
+- [ ] 08-01: TBD
+- [ ] 08-02: TBD
+- [ ] 08-03: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 3/3 | Complete   | 2026-03-22 |
-| 2. Core Analysis | 2/2 | Complete | 2026-03-22 |
-| 3. FAQ | 0/0 | Not started | - |
-| 4. Chat with Transcript | 2/2 | Complete   | 2026-03-22 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation | v1.0 | 3/3 | Complete | 2026-03-22 |
+| 2. Core Analysis | v1.0 | 2/2 | Complete | 2026-03-22 |
+| 3. FAQ | v1.0 | 1/1 | Complete | 2026-03-22 |
+| 4. Chat with Transcript | v1.0 | 2/2 | Complete | 2026-03-22 |
+| 5. Backend API | v1.1 | 0/? | Not started | - |
+| 6. Frontend Scaffold | v1.1 | 0/? | Not started | - |
+| 7. Upload & Processing | v1.1 | 0/? | Not started | - |
+| 8. Workspace | v1.1 | 0/? | Not started | - |
