@@ -51,11 +51,11 @@ Requirements for milestone v1.1 — Web Frontend.
 
 ### Workspace (WRKS)
 
-- [ ] **WRKS-01**: Пользователь видит список записей в sidebar и может переключаться между ними
-- [ ] **WRKS-02**: Пользователь задаёт вопрос по записи и получает ответ с цитатой в чате
-- [ ] **WRKS-03**: Пользователь запускает быстрый анализ (summary/тезисы/action items/FAQ) из правой панели
-- [ ] **WRKS-04**: Пользователь просматривает диаризованную транскрипцию (спикер → реплика) в правой панели
-- [ ] **WRKS-05**: Трёхколоночный layout с collapsible панелями
+- [x] **WRKS-01**: Пользователь видит список записей в sidebar и может переключаться между ними
+- [x] **WRKS-02**: Пользователь задаёт вопрос по записи и получает ответ с цитатой в чате
+- [x] **WRKS-03**: Пользователь запускает быстрый анализ (summary/тезисы/action items/FAQ) из правой панели
+- [x] **WRKS-04**: Пользователь просматривает диаризованную транскрипцию (спикер → реплика) в правой панели
+- [x] **WRKS-05**: Трёхколоночный layout с collapsible панелями
 
 ### Scaffold (SCAF)
 
@@ -125,11 +125,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UPLD-02 | Phase 7 | Complete |
 | UPLD-03 | Phase 7 | Complete |
 | UPLD-04 | Phase 7 | Complete |
-| WRKS-01 | Phase 8 | Pending |
-| WRKS-02 | Phase 8 | Pending |
-| WRKS-03 | Phase 8 | Pending |
-| WRKS-04 | Phase 8 | Pending |
-| WRKS-05 | Phase 8 | Pending |
+| WRKS-01 | Phase 8 | Complete |
+| WRKS-02 | Phase 8 | Complete |
+| WRKS-03 | Phase 8 | Complete |
+| WRKS-04 | Phase 8 | Complete |
+| WRKS-05 | Phase 8 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 18 total
