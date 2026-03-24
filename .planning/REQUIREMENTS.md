@@ -44,10 +44,10 @@ Requirements for milestone v1.1 — Web Frontend.
 
 ### Upload (UPLD)
 
-- [ ] **UPLD-01**: Пользователь загружает аудиофайл через drag & drop или file picker
-- [ ] **UPLD-02**: Пользователь видит прогресс загрузки файла (progress bar)
-- [ ] **UPLD-03**: Пользователь видит экран ожидания с шагами обработки (transcribing → diarizing → ready)
-- [ ] **UPLD-04**: Пользователь видит информативную ошибку при сбое загрузки или обработки
+- [x] **UPLD-01**: Пользователь загружает аудиофайл через drag & drop или file picker
+- [x] **UPLD-02**: Пользователь видит прогресс загрузки файла (progress bar)
+- [x] **UPLD-03**: Пользователь видит экран ожидания с шагами обработки (transcribing → diarizing → ready)
+- [x] **UPLD-04**: Пользователь видит информативную ошибку при сбое загрузки или обработки
 
 ### Workspace (WRKS)
 
@@ -121,10 +121,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCAF-01 | Phase 6 | Complete |
 | SCAF-02 | Phase 6 | Complete |
 | SCAF-03 | Phase 6 | Complete |
-| UPLD-01 | Phase 7 | Pending |
-| UPLD-02 | Phase 7 | Pending |
-| UPLD-03 | Phase 7 | Pending |
-| UPLD-04 | Phase 7 | Pending |
+| UPLD-01 | Phase 7 | Complete |
+| UPLD-02 | Phase 7 | Complete |
+| UPLD-03 | Phase 7 | Complete |
+| UPLD-04 | Phase 7 | Complete |
 | WRKS-01 | Phase 8 | Pending |
 | WRKS-02 | Phase 8 | Pending |
 | WRKS-03 | Phase 8 | Pending |
