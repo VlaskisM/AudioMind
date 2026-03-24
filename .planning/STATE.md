@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Web Frontend
-status: executing
-last_updated: "2026-03-24T11:51:51Z"
+status: unknown
+last_updated: "2026-03-24T12:35:08.731Z"
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 13
+  completed_plans: 13
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-24)
 
 **Core value:** Пользователь загружает аудио и получает структурированный анализ содержания через LLM
-**Current focus:** Phase 6 — Frontend Scaffold (v1.1 Web Frontend)
+**Current focus:** Phase 7 — Upload Processing (v1.1 Web Frontend)
 
 ## Current Position
 
-Phase: 6 of 8 (Frontend Scaffold)
-Plan: 1 of 1 in current phase
+Phase: 7 of 8 (Upload Processing)
+Plan: 2 of 2 in current phase
 Status: Completed
-Last activity: 2026-03-24 — Completed 06-01 (Frontend Scaffold)
+Last activity: 2026-03-24 — Completed 07-02 (Processing Status Page)
 
-Progress: [█████████████░░░░░░░] 69% (11/16 plans across v1.0+v1.1)
+Progress: [████████████████░░░░] 81% (13/16 plans across v1.0+v1.1)
 
 ## Performance Metrics
 
@@ -46,6 +46,7 @@ Progress: [█████████████░░░░░░░] 69% (11
 | 4. Chat | 2 | — | — |
 | 5. Backend API | 2 | 8min | 4min |
 | 6. Frontend Scaffold | 1 | 5min | 5min |
+| 7. Upload Processing | 2 | 2min | 1min |
 
 *Updated after each plan completion*
 
@@ -68,6 +69,11 @@ Recent decisions affecting current work:
 - [v1.1] Workers depend_on app в docker-compose для доступности callback
 - [v1.1] Tailwind v4 нужно установить ДО shadcn init (shadcn проверяет наличие Tailwind)
 - [v1.1] tsconfig.json (root) нужен baseUrl+paths для обнаружения alias через shadcn
+- [v1.1] user_id=1 hardcoded в upload URL (нет auth в v1.1)
+- [v1.1] timeout: 0 для upload больших аудиофайлов
+- [v1.1] 500MB max file size frontend validation
+- [v1.1] Polling каждые 2с через TanStack Query refetchInterval, stop при terminal state
+- [v1.1] navigate replace: true для предотвращения возврата на processing через кнопку "Назад"
 
 ### Pending Todos
 
@@ -81,5 +87,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-24
-Stopped at: Completed 06-01-PLAN.md
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None

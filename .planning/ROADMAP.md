@@ -94,11 +94,11 @@ Plans:
   3. После загрузки пользователь видит экран ожидания с текущим шагом обработки (transcribing -> diarizing -> ready)
   4. При ошибке загрузки или обработки пользователь видит понятное сообщение с возможностью повторить
   5. После готовности записи пользователь автоматически попадает в workspace
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01: Upload page — react-dropzone, progress bar, upload API, error handling
+- [ ] 07-02: Processing page — status polling, stepper UI, auto-redirect, error display
 
 ### Phase 8: Workspace
 **Goal**: Пользователь работает с записью в полноценном интерфейсе — история записей, чат с цитатами, быстрые анализы, просмотр транскрипции
