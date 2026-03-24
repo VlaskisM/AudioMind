@@ -110,12 +110,12 @@ Plans:
   3. Пользователь нажимает кнопку анализа (summary/тезисы/action items/FAQ) и видит результат в правой панели
   4. Пользователь просматривает диаризованную транскрипцию (спикер -> реплика) в правой панели
   5. Трёхколоночный layout с возможностью сворачивания sidebar и правой панели
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01: shadcn компоненты, API layer, TanStack Query хуки, Zustand store
+- [ ] 08-02: RecordingSidebar, ChatPanel, трёхколоночный WorkspacePage layout
+- [ ] 08-03: AnalysisPanel с табами анализов и TranscriptView
 
 ## Progress
 
