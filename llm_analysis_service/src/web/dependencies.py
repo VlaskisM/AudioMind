@@ -1,5 +1,6 @@
 from fastapi import Request
 
+from llm_analysis_service.src.db.mongodb.diarization_reader import DiarizationReader
 from llm_analysis_service.src.services.analysis import AnalysisService
 from llm_analysis_service.src.services.chat import ChatService
 
@@ -12,3 +13,8 @@ def get_analysis_service(request: Request) -> AnalysisService:
 def get_chat_service(request: Request) -> ChatService:
     """Dependency для получения ChatService из app.state."""
     return request.app.state.chat_service
+
+
+def get_diarization_reader(request: Request) -> DiarizationReader:
+    """Dependency для получения DiarizationReader из app.state."""
+    return request.app.state.diarization_reader
