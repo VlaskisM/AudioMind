@@ -59,9 +59,9 @@ Requirements for milestone v1.1 — Web Frontend.
 
 ### Scaffold (SCAF)
 
-- [ ] **SCAF-01**: React + Vite + TypeScript проект с shadcn/ui инициализирован и запускается в Docker
-- [ ] **SCAF-02**: Маршрутизация работает: `/` → загрузка, `/recordings/:id/processing` → ожидание, `/recordings/:id` → workspace
-- [ ] **SCAF-03**: API layer с двумя Axios инстансами (data_ingress + llm_analysis) через Vite proxy
+- [x] **SCAF-01**: React + Vite + TypeScript проект с shadcn/ui инициализирован и запускается в Docker
+- [x] **SCAF-02**: Маршрутизация работает: `/` → загрузка, `/recordings/:id/processing` → ожидание, `/recordings/:id` → workspace
+- [x] **SCAF-03**: API layer с двумя Axios инстансами (data_ingress + llm_analysis) через Vite proxy
 
 ## v2 Requirements
 
@@ -118,9 +118,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BAPI-04 | Phase 5 | Pending |
 | BAPI-05 | Phase 5 | Complete |
 | BAPI-06 | Phase 5 | Complete |
-| SCAF-01 | Phase 6 | Pending |
-| SCAF-02 | Phase 6 | Pending |
-| SCAF-03 | Phase 6 | Pending |
+| SCAF-01 | Phase 6 | Complete |
+| SCAF-02 | Phase 6 | Complete |
+| SCAF-03 | Phase 6 | Complete |
 | UPLD-01 | Phase 7 | Pending |
 | UPLD-02 | Phase 7 | Pending |
 | UPLD-03 | Phase 7 | Pending |
