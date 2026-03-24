@@ -1,164 +1,209 @@
-# Architecture Research: LLM Analysis Service
+# Architecture Research: Speechmate v1.1 — Web Frontend
 
-**Domain:** LLM analysis microservice integration
-**Date:** 2026-03-22
-**Context:** 4th service in existing event-driven platform (data_ingress → transcription → diarization → **analysis**)
+**Domain:** React SPA integration with existing Python microservices
+**Date:** 2026-03-24
+**Context:** Adding frontend to 4 existing services (data_ingress:8001, transcription_service, dialogue_detection, llm_analysis_service:8003)
 
 ## Component Overview
 
 ```
-┌─────────────────────────────────────────────────┐
-│                LLM Analysis Service              │
-│                                                  │
-│  ┌──────────┐   ┌────────────────┐              │
-│  │ HTTP API │──▶│ AnalysisService│──┐           │
-│  │ (FastAPI)│   └────────────────┘  │           │
-│  │          │   ┌────────────────┐  │           │
-│  │          │──▶│  ChatService   │──┤           │
-│  └──────────┘   └────────────────┘  │           │
-│                                      ▼           │
-│                 ┌────────────────┐ ┌──────────┐ │
-│                 │ PromptManager  │ │ LLMClient│ │
-│                 │ (Jinja2)       │ │ (OpenAI) │ │
-│                 └────────────────┘ └──────────┘ │
-│                                      │           │
-│  ┌──────────────────┐  ┌───────────────────┐   │
-│  │TranscriptionReader│  │AnalysisRepository │   │
-│  │(reads from Mongo) │  │ChatRepository     │   │
-│  └──────────────────┘  │(writes to Mongo)   │   │
-│                         └───────────────────┘   │
-└──────────────────────┬──────────────────────────┘
-                       │
-              ┌────────┴────────┐
-              │    MongoDB      │
-              │ - transcriptions│
-              │ - diarizations  │
-              │ - analyses      │
-              │ - chat_sessions │
-              └─────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     React SPA (Vite :5173)                       │
+│                                                                   │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────────────────────┐  │
+│  │ Sidebar   │  │  Chat Panel  │  │  Right Panel              │  │
+│  │ (history) │  │  (messages)  │  │  ├─ Analysis tabs         │  │
+│  │           │  │  (input)     │  │  └─ Transcript viewer     │  │
+│  └──────────┘  └──────────────┘  └───────────────────────────┘  │
+│                                                                   │
+│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────┐    │
+│  │ Upload Page  │  │ Processing   │  │ Workspace Layout    │    │
+│  │ (drag&drop)  │  │ (polling)    │  │ (3-column)          │    │
+│  └─────────────┘  └──────────────┘  └─────────────────────┘    │
+│                                                                   │
+│  Shared: TanStack Query │ Zustand │ Axios instances │ Router    │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │
+              ┌────────────┴────────────┐
+              │    Vite Dev Proxy        │
+              │  /api/ingress → :8001    │
+              │  /api/analysis → :8003   │
+              └────────────┬────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+    ┌────┴────┐      ┌────┴────┐      ┌────┴────┐
+    │data_ingr│      │llm_anal │      │  Nginx  │
+    │ess:8001 │      │ysis:8003│      │  (prod) │
+    │         │      │         │      │         │
+    │Upload   │      │Analysis │      │Proxy +  │
+    │Status   │      │Chat     │      │Static   │
+    │List     │      │Transcript│     │Files    │
+    └────┬────┘      └────┬────┘      └─────────┘
+         │                │
+    ┌────┴────┐      ┌────┴────┐
+    │PostgreSQL│      │ MongoDB │
+    │(metadata)│      │(content)│
+    └─────────┘      └─────────┘
 ```
 
-## Components
+## Integration Pattern: Direct Calls (no API gateway)
 
-### 1. HTTP API (FastAPI)
-- **Граница:** Принимает HTTP запросы, валидирует, возвращает JSON
-- **Эндпоинты:**
-  - `POST /recordings/{id}/analyze` — запуск анализа (type: summary|key_points|action_items|faq)
-  - `GET /recordings/{id}/analyses` — получить сохранённые результаты
-  - `POST /recordings/{id}/chat` — отправить сообщение в чат
-  - `GET /recordings/{id}/chat/history` — история чата
-- **Зависимости:** AnalysisService, ChatService
+Фронтенд обращается напрямую к двум сервисам через Vite proxy (dev) или Nginx (prod):
 
-### 2. AnalysisService
-- **Граница:** Оркестрация анализа — проверка кэша, загрузка транскрипции, вызов LLM, сохранение
-- **Логика:**
-  1. Проверить кэш (recording_id + analysis_type)
-  2. Если нет → загрузить транскрипцию + диаризацию из MongoDB
-  3. Подготовить промпт через PromptManager
-  4. Вызвать LLMClient
-  5. Сохранить результат через AnalysisRepository
-- **Зависимости:** TranscriptionReader, PromptManager, LLMClient, AnalysisRepository
+| Route prefix | Target | Endpoints |
+|-------------|--------|-----------|
+| `/api/ingress/*` | data_ingress:8001 | Upload, status, recordings list |
+| `/api/analysis/*` | llm_analysis_service:8003 | Analysis, chat, transcript |
 
-### 3. ChatService
-- **Граница:** Управление чат-сессиями — история, контекст, вызов LLM
-- **Логика:**
-  1. Загрузить/создать сессию
-  2. Собрать контекст: транскрипция + история сообщений
-  3. Вызвать LLMClient с system prompt + context + user message
-  4. Сохранить пару (вопрос, ответ) в историю
-- **Управление контекстом:** Обрезка старых сообщений при приближении к лимиту токенов
-- **Зависимости:** TranscriptionReader, LLMClient, ChatRepository
+**Почему не API gateway:** Два сервиса, простая маршрутизация. Gateway — оверкилл на данном этапе.
 
-### 4. PromptManager
-- **Граница:** Загрузка и рендеринг Jinja2 шаблонов промптов
-- **Промпты:** `summary.j2`, `key_points.j2`, `action_items.j2`, `faq.j2`, `chat_system.j2`
-- **Переменные:** transcription_text, speakers, duration, language, analysis_type
+## New Backend Endpoints Required
 
-### 5. LLMClient
-- **Граница:** Обёртка над OpenAI AsyncClient
-- **Ответственность:** Вызов API, structured output (response_format), retry, подсчёт токенов
-- **Конфигурация:** model, temperature, max_tokens через env vars
+### data_ingress (port 8001)
 
-### 6. TranscriptionReader
-- **Граница:** Чтение транскрипции + диаризации из MongoDB, форматирование для промпта
-- **Формат вывода:** Текст с метками спикеров и таймкодами
-- **Chunking:** Разбивка длинных транскрипций по сегментам спикеров
+| Endpoint | Method | Purpose | Notes |
+|----------|--------|---------|-------|
+| `/recordings/{id}/status` | GET | Статус записи для polling | ⚠️ Требует новое поле `status` в модели Recording |
+| `/recordings` | GET | Список записей с пагинацией | Для sidebar. `?limit=50&offset=0&sort=-created_at` |
+| `/internal/recordings/{id}/status` | PATCH | Обновление статуса воркерами | transcription_service и dialogue_detection вызывают по HTTP callback |
 
-### 7. AnalysisRepository / ChatRepository
-- **Граница:** CRUD для результатов анализа и чат-сессий в MongoDB
-- **Коллекции:** `analyses`, `chat_sessions`
+### llm_analysis_service (port 8003) или data_ingress
 
-## Data Flow
+| Endpoint | Method | Purpose | Notes |
+|----------|--------|---------|-------|
+| `/recordings/{id}/transcript` | GET | Диаризованная транскрипция | Для правой панели. Формат: `[{speaker, text, start, end}]` |
 
-### Анализ (summary / key_points / action_items / faq)
+## Critical Gap: Status Field
+
+⚠️ **Recording модель в data_ingress НЕ имеет поля `status`.**
+
+Нужно:
+1. Добавить `status: str` в модель Recording (PostgreSQL)
+2. Alembic миграция
+3. Обновлять статус при каждом событии:
+   - `uploaded` — после сохранения файла
+   - `transcribing` — когда transcription_service начал обработку
+   - `diarizing` — когда dialogue_detection начал обработку
+   - `ready` — когда всё завершено
+   - `failed` — при ошибке
+
+**Стратегия обновления:** HTTP callback от воркеров к data_ingress. data_ingress — единственный владелец PostgreSQL.
+
+## Status Propagation Flow
 
 ```
-Client → POST /recordings/{id}/analyze?type=summary
-  → AnalysisService.analyze(recording_id, type)
-    → Check cache (AnalysisRepository.find)
-    → If cached → return cached result
-    → TranscriptionReader.get(recording_id) → formatted text
-    → PromptManager.render("summary", {text, speakers})
-    → LLMClient.complete(prompt) → structured response
-    → AnalysisRepository.save(recording_id, type, result)
-    → return result
+data_ingress                transcription_service       dialogue_detection
+    │                              │                          │
+    │ POST /recordings/upload      │                          │
+    │ → status = "uploaded"        │                          │
+    │ → publish to RabbitMQ        │                          │
+    │                              │                          │
+    │  PATCH /internal/.../status  │                          │
+    │ ◄──── status="transcribing"  │                          │
+    │                              │ (processing...)          │
+    │  PATCH /internal/.../status  │                          │
+    │ ◄──── status="transcribed"   │                          │
+    │                              │ → publish to RabbitMQ    │
+    │                              │                          │
+    │  PATCH /internal/.../status  │                          │
+    │ ◄──────────────────────────────── status="diarizing"    │
+    │                              │                          │ (processing...)
+    │  PATCH /internal/.../status  │                          │
+    │ ◄──────────────────────────────── status="ready"        │
 ```
 
-### Чат
+## Frontend Component Architecture
 
 ```
-Client → POST /recordings/{id}/chat {message: "..."}
-  → ChatService.send(recording_id, message)
-    → TranscriptionReader.get(recording_id) → context
-    → ChatRepository.get_history(recording_id, session_id)
-    → PromptManager.render("chat_system", {context})
-    → LLMClient.chat([system, ...history, user_message])
-    → ChatRepository.save_message(session_id, user_msg, assistant_msg)
-    → return response
+App
+├── Router
+│   ├── / → UploadPage
+│   │   └── DropZone + UploadProgress
+│   │
+│   ├── /recordings/:id/processing → ProcessingPage
+│   │   └── StatusSteps + PollingHook
+│   │
+│   └── /recordings/:id → WorkspacePage
+│       ├── Sidebar (RecordingList)
+│       ├── ChatPanel
+│       │   ├── MessageList
+│       │   └── ChatInput
+│       └── RightPanel
+│           ├── AnalysisTab (Summary | KeyPoints | ActionItems | FAQ)
+│           └── TranscriptTab (DiarizedTranscript)
+│
+├── Providers
+│   ├── QueryClientProvider (TanStack Query)
+│   └── ThemeProvider (shadcn/ui)
+│
+└── Shared
+    ├── api/ (axios instances, endpoints)
+    ├── hooks/ (useRecordingStatus, useAnalysis, useChat)
+    └── store/ (zustand: selectedRecording, panelStates)
 ```
 
-## Стратегия кэширования
+## Data Flow Patterns
 
-**Ключ кэша:** `(recording_id, analysis_type, prompt_version)`
-- Тот же recording_id + тот же тип → вернуть кэш
-- Регенерация → удалить кэш, вызвать LLM заново
-- Смена prompt_version → кэш невалиден
+### Polling (Processing Screen)
+```ts
+// TanStack Query с автоматической остановкой
+useQuery({
+  queryKey: ['recording-status', id],
+  queryFn: () => ingressApi.get(`/recordings/${id}/status`),
+  refetchInterval: (query) =>
+    query.state.data?.status === 'ready' ? false : 3000,
+  // Автоматическая очистка при unmount
+})
+```
 
-## Обработка длинных транскрипций
+### Analysis (Right Panel)
+```ts
+// Mutation с автоматическим обновлением кэша
+useMutation({
+  mutationFn: (type) => analysisApi.post(`/recordings/${id}/analyze`, { type }),
+  onSuccess: (data, type) =>
+    queryClient.setQueryData(['analysis', id, type], data)
+})
+```
 
-**Стратегия: Map-Reduce**
-1. Подсчитать токены через tiktoken
-2. Если < лимита модели → отправить целиком
-3. Если > лимита → разбить на чанки по сегментам спикеров
-4. Map: получить промежуточный результат для каждого чанка
-5. Reduce: объединить промежуточные результаты в финальный
+### Chat (Center Panel)
+```ts
+// Оптимистичный UI: сообщение юзера появляется сразу
+useMutation({
+  mutationFn: (message) => analysisApi.post(`/recordings/${id}/chat`, { message }),
+  onMutate: (message) => {
+    // Добавить сообщение юзера в кэш мгновенно
+  }
+})
+```
 
-**Для чата:** Транскрипция обрезается до релевантных секций (можно использовать простой поиск по ключевым словам).
+## Build Order (suggested)
 
-## Порядок сборки
+| Phase | Components | Depends on | Delivers |
+|-------|-----------|------------|----------|
+| 1. Backend API | Status field, PATCH callback, GET status/list/transcript, CORS | Existing services | Backend ready for frontend |
+| 2. Frontend Scaffold | Vite project, routing, providers, API layer, layout shell | Phase 1 | Navigable app skeleton |
+| 3. Upload + Processing | UploadPage, ProcessingPage, polling | Phase 1 + 2 | Upload → ready flow |
+| 4. Workspace | Sidebar, ChatPanel, RightPanel (analyses + transcript) | Phase 1 + 2 + 3 | Full user experience |
 
-| Фаза | Компоненты | Зависимости |
-|------|-----------|-------------|
-| 1 | Скелет сервиса, конфигурация, Docker | Существующая инфраструктура |
-| 2 | TranscriptionReader, LLMClient, PromptManager | Фаза 1 |
-| 3 | AnalysisService + эндпоинты (summary, key_points, action_items, faq) | Фаза 2 |
-| 4 | Кэширование + регенерация | Фаза 3 |
-| 5 | ChatService + чат эндпоинты | Фаза 2, 4 |
+**Ключевой принцип:** Каждая фаза — вертикальный срез (бэкенд + фронтенд), а не горизонтальный (весь бэкенд → весь фронтенд).
 
-## Интеграция с существующей архитектурой
+## Production Deployment
 
-**Переиспользуется:**
-- Docker-compose (добавляем новый сервис)
-- MongoDB (новые коллекции в той же БД)
-- Паттерн Repository (из transcription_service)
-- Pydantic-settings конфигурация
-- Структура проекта
+```yaml
+# docker-compose addition
+frontend:
+  build: ./frontend
+  ports: ["3000:80"]
+  # Nginx serves static + proxies /api/*
+```
 
-**Новое:**
-- OpenAI API интеграция
-- Prompt templates
-- Chat session management
-- Token counting / chunking
+Nginx конфиг:
+- `/` → React SPA (static files)
+- `/api/ingress/*` → data_ingress:8001
+- `/api/analysis/*` → llm_analysis_service:8003
 
 ---
-*Architecture designed for consistency with existing Speechmate services*
+*Architecture designed for integration with existing Speechmate microservices*
+*Researched: 2026-03-24*
