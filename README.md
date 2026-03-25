@@ -9,30 +9,22 @@
 Микросервисная архитектура с event-driven pipeline через RabbitMQ:
 
 ```
-                         ┌──────────────┐
-                         │   Frontend   │
-                         │   (React)    │
-                         └──────┬───────┘
-                           HTTP │ HTTP
-                    ┌──────────┴──────────┐
-                    ▼                      ▼
-            ┌──────────────┐     ┌──────────────────┐
-            │ Data Ingress │     │  LLM Analysis    │
-            │  (FastAPI)   │     │  (GigaChat)      │
-            └──────┬───────┘     └────────┬─────────┘
-                   │                      │
-         ┌────────┼────────┐              │
-         ▼        ▼        ▼              ▼
-    PostgreSQL  MinIO   RabbitMQ       MongoDB
-                (S3)       │
-               ┌───────────┴───────────┐
-               ▼                       ▼
-    ┌───────────────────┐   ┌─────────────────────┐
-    │   Transcription   │   │  Dialogue Detection  │
-    │    (WhisperX)     │   │  (WhisperX Diarize)  │
-    └─────────┬─────────┘   └──────────┬───────────┘
-              ▼                        ▼
-           MongoDB                  MongoDB
+┌────────────┐     ┌──────────────┐     ┌───────────────────┐     ┌─────────────────────┐
+│  Frontend   │────▶│ Data Ingress │────▶│   Transcription    │────▶│  Dialogue Detection  │
+│  (React)    │     │  (FastAPI)   │     │    (WhisperX)      │     │   (WhisperX Diarize) │
+└────────────┘     └──────────────┘     └───────────────────┘     └─────────────────────┘
+      │                   │                       │                          │
+      │                   ▼                       ▼                          ▼
+      │              PostgreSQL              MongoDB                    MongoDB
+      │              MinIO (S3)
+      │
+      │            ┌──────────────────┐
+      └───────────▶│  LLM Analysis    │
+                   │  (GigaChat)      │
+                   └──────────────────┘
+                          │
+                          ▼
+                       MongoDB
 ```
 
 **Поток обработки:**
