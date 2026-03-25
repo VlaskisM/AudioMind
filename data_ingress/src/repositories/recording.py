@@ -15,7 +15,7 @@ class AbstractRecordingRepository(ABC):
         ...
 
     @abstractmethod
-    async def create(self, badge_id: str, ts: int, file_url: str, user_id: int) -> Recording:
+    async def create(self, ts: int, file_url: str, user_id: int) -> Recording:
         ...
 
     @abstractmethod
@@ -31,9 +31,13 @@ class AbstractRecordingRepository(ABC):
         ...
 
     @abstractmethod
-    async def get_by_badge_id(self, badge_id: str) -> list[Recording]:
+    async def delete(self, recording_id: int) -> bool:
         ...
 
     @abstractmethod
-    async def delete(self, recording_id: int) -> bool:
+    async def get_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+        ...
+
+    @abstractmethod
+    async def update_status(self, recording_id: int, status: str, error_message: str | None = None) -> Recording | None:
         ...

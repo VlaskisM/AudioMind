@@ -1,5 +1,6 @@
 import asyncio
 
+import httpx
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.messaging.consumer import RabbitMQConsumer
@@ -9,6 +10,7 @@ from src.db.uow import UnitOfWork
 from src.services.diarization import DiarizationService
 from src.configs.mongodb import mongo_settings
 from src.configs.huggingface import hf_settings
+from src.configs.callback import callback_settings
 
 s3 = S3Downloader()
 diarization_service = DiarizationService(hf_token=hf_settings.HF_TOKEN, device="cpu")
@@ -16,6 +18,8 @@ diarization_service = DiarizationService(hf_token=hf_settings.HF_TOKEN, device="
 mongo_client = AsyncIOMotorClient(mongo_settings.url)
 db = mongo_client[mongo_settings.MONGO_DB]
 transcription_reader = TranscriptionReader(db[TRANSCRIPTION_COLLECTION])
+
+http_client = httpx.AsyncClient(base_url=callback_settings.DATA_INGRESS_URL, timeout=10.0)
 
 
 async def process_message(body: dict) -> None:
@@ -36,6 +40,16 @@ async def process_message(body: dict) -> None:
             uow.track_insert(inserted_id)
             uow.publish(recording_id)
             await uow.commit()
+
+        # Статус: ready
+        await http_client.patch(f"/recordings/{recording_id}/status", json={"status": "ready"})
+    except Exception:
+        # Статус: failed
+        try:
+            await http_client.patch(f"/recordings/{recording_id}/status", json={"status": "failed"})
+        except Exception:
+            pass  # Don't mask original error
+        raise
     finally:
         audio_path.unlink(missing_ok=True)
 

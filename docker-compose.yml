@@ -87,10 +87,12 @@ services:
       RABBITMQ_HOST: speechmate-rabbitmq
       S3_ENDPOINT: http://speechmate-minio:9000
       MONGO_HOST: speechmate-mongodb
+      DATA_INGRESS_URL: http://speechmate-app:8000
     depends_on:
       - rabbitmq
       - minio
       - mongodb
+      - app
 
   dialogue_detection:
     build:
@@ -104,10 +106,38 @@ services:
       RABBITMQ_HOST: speechmate-rabbitmq
       S3_ENDPOINT: http://speechmate-minio:9000
       MONGO_HOST: speechmate-mongodb
+      DATA_INGRESS_URL: http://speechmate-app:8000
     depends_on:
       - rabbitmq
       - minio
       - mongodb
+      - app
+
+  llm_analysis:
+    build: ./llm_analysis_service
+    container_name: speechmate-llm-analysis
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: speechmate-mongodb
+    ports:
+      - "8003:8003"
+    depends_on:
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    container_name: speechmate-frontend
+    restart: unless-stopped
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - app
+      - llm_analysis
 
 volumes:
   postgres_data:
