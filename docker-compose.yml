@@ -131,7 +131,7 @@ services:
     container_name: speechmate-frontend
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

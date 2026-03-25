@@ -1,8 +1,8 @@
 from fastapi import Request
 
-from llm_analysis_service.src.db.mongodb.diarization_reader import DiarizationReader
-from llm_analysis_service.src.services.analysis import AnalysisService
-from llm_analysis_service.src.services.chat import ChatService
+from src.db.mongodb.diarization_reader import DiarizationReader
+from src.services.analysis import AnalysisService
+from src.services.chat import ChatService
 
 
 def get_analysis_service(request: Request) -> AnalysisService:

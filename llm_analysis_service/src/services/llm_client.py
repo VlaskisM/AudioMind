@@ -1,18 +1,25 @@
-from openai import AsyncOpenAI
+import json
+
+from gigachat import GigaChat
+from gigachat.models import Chat, Messages, MessagesRole
 from pydantic import BaseModel
 
 
 class LLMClient:
-    """Обёртка над AsyncOpenAI с поддержкой map-reduce для длинных транскрипций."""
+    """Обёртка над GigaChat с поддержкой map-reduce для длинных транскрипций."""
 
     def __init__(
         self,
-        api_key: str,
-        model: str = "gpt-4o-mini",
+        credentials: str,
+        model: str = "GigaChat",
         temperature: float = 0.3,
         max_tokens: int = 4096,
     ) -> None:
-        self._client = AsyncOpenAI(api_key=api_key)
+        self._client = GigaChat(
+            credentials=credentials,
+            model=model,
+            verify_ssl_certs=False,
+        )
         self._model = model
         self._temperature = temperature
         self._max_tokens = max_tokens
@@ -24,14 +31,16 @@ class LLMClient:
 
     async def complete(self, system_prompt: str, user_content: str) -> str:
         """Один вызов LLM. Возвращает текстовый ответ."""
-        response = await self._client.chat.completions.create(
-            model=self._model,
-            temperature=self._temperature,
-            max_tokens=self._max_tokens,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_content},
-            ],
+        response = await self._client.achat(
+            Chat(
+                model=self._model,
+                temperature=self._temperature,
+                max_tokens=self._max_tokens,
+                messages=[
+                    Messages(role=MessagesRole.SYSTEM, content=system_prompt),
+                    Messages(role=MessagesRole.USER, content=user_content),
+                ],
+            )
         )
         return response.choices[0].message.content or ""
 
@@ -102,6 +111,28 @@ class LLMClient:
         lines = [f'{turn["speaker"]}: {turn["text"]}' for turn in chunk]
         return "\n".join(lines)
 
+    @staticmethod
+    def _build_json_instruction(response_format: type[BaseModel]) -> str:
+        """Строит инструкцию для JSON-ответа на основе Pydantic-модели."""
+        schema = response_format.model_json_schema()
+        return (
+            "\n\nОтветь ТОЛЬКО валидным JSON объектом без markdown-разметки, "
+            "соответствующим следующей JSON Schema:\n"
+            f"```json\n{json.dumps(schema, ensure_ascii=False, indent=2)}\n```"
+        )
+
+    @staticmethod
+    def _parse_json_response(text: str, response_format: type[BaseModel]) -> BaseModel:
+        """Извлекает JSON из текста ответа и валидирует через Pydantic."""
+        content = text.strip()
+        # Убираем markdown code block если есть
+        if content.startswith("```"):
+            # Убираем первую строку (```json) и последнюю (```)
+            lines = content.split("\n")
+            lines = [l for l in lines if not l.strip().startswith("```")]
+            content = "\n".join(lines)
+        return response_format.model_validate_json(content)
+
     async def complete_structured(
         self,
         system_prompt: str,
@@ -109,24 +140,9 @@ class LLMClient:
         response_format: type[BaseModel],
     ) -> BaseModel:
         """Вызов LLM с structured output. Возвращает Pydantic-модель."""
-        completion = await self._client.beta.chat.completions.parse(
-            model=self._model,
-            temperature=self._temperature,
-            max_tokens=self._max_tokens,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_content},
-            ],
-            response_format=response_format,
-        )
-        message = completion.choices[0].message
-        if message.refusal:
-            raise RuntimeError(f"LLM refused: {message.refusal}")
-        if message.parsed is None:
-            raise RuntimeError(
-                "LLM returned empty parsed response (возможно max_tokens слишком мал)"
-            )
-        return message.parsed
+        augmented_prompt = system_prompt + self._build_json_instruction(response_format)
+        text = await self.complete(augmented_prompt, user_content)
+        return self._parse_json_response(text, response_format)
 
     async def chat_structured(
         self,
@@ -134,19 +150,29 @@ class LLMClient:
         response_format: type[BaseModel],
     ) -> BaseModel:
         """Вызов LLM с multi-turn messages и structured output."""
-        completion = await self._client.beta.chat.completions.parse(
-            model=self._model,
-            temperature=self._temperature,
-            max_tokens=self._max_tokens,
-            messages=messages,
-            response_format=response_format,
+        json_instruction = self._build_json_instruction(response_format)
+
+        gigachat_messages = []
+        for msg in messages:
+            role = MessagesRole.SYSTEM if msg["role"] == "system" else (
+                MessagesRole.ASSISTANT if msg["role"] == "assistant" else MessagesRole.USER
+            )
+            content = msg["content"]
+            # Добавляем JSON-инструкцию к system prompt
+            if role == MessagesRole.SYSTEM:
+                content += json_instruction
+            gigachat_messages.append(Messages(role=role, content=content))
+
+        response = await self._client.achat(
+            Chat(
+                model=self._model,
+                temperature=self._temperature,
+                max_tokens=self._max_tokens,
+                messages=gigachat_messages,
+            )
         )
-        message = completion.choices[0].message
-        if message.refusal:
-            raise RuntimeError(f"LLM refused: {message.refusal}")
-        if message.parsed is None:
-            raise RuntimeError("LLM returned empty parsed response")
-        return message.parsed
+        text = response.choices[0].message.content or ""
+        return self._parse_json_response(text, response_format)
 
     async def map_reduce_structured(
         self,
@@ -206,4 +232,4 @@ class LLMClient:
 
     async def close(self) -> None:
         """Закрытие HTTP-клиента."""
-        await self._client.close()
+        await self._client.aclose()

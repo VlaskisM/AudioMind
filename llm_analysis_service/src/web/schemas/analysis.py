@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from llm_analysis_service.src.services.models import (
+from src.services.models import (
     SummaryResult,
     KeyPointsResult,
     ActionItemsResult,

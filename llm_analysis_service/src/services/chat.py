@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 
-from llm_analysis_service.src.db.mongodb.chat_session_repository import ChatSessionRepository
-from llm_analysis_service.src.db.mongodb.diarization_reader import DiarizationReader
-from llm_analysis_service.src.services.analysis import AnalysisError
-from llm_analysis_service.src.services.chunking import ChunkingService
-from llm_analysis_service.src.services.llm_client import LLMClient
-from llm_analysis_service.src.services.models import ChatAnswer
-from llm_analysis_service.src.services.prompts import CHAT_SYSTEM_PROMPT
+from src.db.mongodb.chat_session_repository import ChatSessionRepository
+from src.db.mongodb.diarization_reader import DiarizationReader
+from src.services.analysis import AnalysisError
+from src.services.chunking import ChunkingService
+from src.services.llm_client import LLMClient
+from src.services.models import ChatAnswer
+from src.services.prompts import CHAT_SYSTEM_PROMPT
 
 
 class ChatService:

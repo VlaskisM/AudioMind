@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from llm_analysis_service.src.app import lifespan
-from llm_analysis_service.src.configs.cors import cors_settings
-from llm_analysis_service.src.web.routes.health_check import router as health_router
-from llm_analysis_service.src.web.routes.analysis import router as analysis_router
-from llm_analysis_service.src.web.routes.chat import router as chat_router
-from llm_analysis_service.src.web.routes.transcript import router as transcript_router
+from src.app import lifespan
+from src.configs.cors import cors_settings
+from src.web.routes.health_check import router as health_router
+from src.web.routes.analysis import router as analysis_router
+from src.web.routes.chat import router as chat_router
+from src.web.routes.transcript import router as transcript_router
 
 app = FastAPI(lifespan=lifespan)
 

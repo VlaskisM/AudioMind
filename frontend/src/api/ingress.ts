@@ -5,13 +5,12 @@ export const ingressApi = axios.create({
 })
 
 export interface RecordingResponse {
+  id: number
+  ts: number
+  file_url: string
+  user_id: number
   status: string
-  data: {
-    id: number
-    user_id: number
-    status: string
-    original_filename: string
-  }
+  original_filename: string | null
 }
 
 export interface Recording {
