@@ -51,7 +51,7 @@ Plans:
 - [x] **Phase 5: Backend API** - Эндпоинты статуса, списка записей и транскрипции + CORS (completed 2026-03-24)
 - [x] **Phase 6: Frontend Scaffold** - React + Vite + shadcn/ui проект с routing и API layer (completed 2026-03-24)
 - [ ] **Phase 7: Upload & Processing** - Загрузка аудио и экран ожидания обработки
-- [ ] **Phase 8: Workspace** - Сайдбар + чат + анализы + транскрипция
+- [x] **Phase 8: Workspace** - Сайдбар + чат + анализы + транскрипция (completed 2026-03-25)
 
 ## Phase Details
 
@@ -131,4 +131,4 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 5. Backend API | v1.1 | 2/2 | Complete | 2026-03-24 |
 | 6. Frontend Scaffold | v1.1 | 1/1 | Complete | 2026-03-24 |
 | 7. Upload & Processing | v1.1 | 0/? | Not started | - |
-| 8. Workspace | v1.1 | 0/? | Not started | - |
+| 8. Workspace | 3/3 | Complete   | 2026-03-25 | - |
