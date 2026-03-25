@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from llm_analysis_service.src.db.mongodb.client import MongoDBClient
+from src.db.mongodb.client import MongoDBClient
 
 
 class AnalysisRepository:

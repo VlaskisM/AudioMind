@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from llm_analysis_service.src.services.models import ChatAnswer
+from src.services.models import ChatAnswer
 
 
 class ChatRequest(BaseModel):

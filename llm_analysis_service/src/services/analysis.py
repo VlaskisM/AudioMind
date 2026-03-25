@@ -1,16 +1,16 @@
 from pydantic import BaseModel
 
-from llm_analysis_service.src.db.mongodb.analysis_repository import AnalysisRepository
-from llm_analysis_service.src.db.mongodb.diarization_reader import DiarizationReader
-from llm_analysis_service.src.services.chunking import ChunkingService
-from llm_analysis_service.src.services.llm_client import LLMClient
-from llm_analysis_service.src.services.models import (
+from src.db.mongodb.analysis_repository import AnalysisRepository
+from src.db.mongodb.diarization_reader import DiarizationReader
+from src.services.chunking import ChunkingService
+from src.services.llm_client import LLMClient
+from src.services.models import (
     SummaryResult,
     KeyPointsResult,
     ActionItemsResult,
     FaqResult,
 )
-from llm_analysis_service.src.services.prompts import (
+from src.services.prompts import (
     SUMMARY_MAP_PROMPT,
     SUMMARY_REDUCE_PROMPT,
     KEY_POINTS_MAP_PROMPT,

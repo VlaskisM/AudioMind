@@ -10,7 +10,7 @@ export function useUploadRecording() {
   const mutation = useMutation({
     mutationFn: (file: File) => uploadRecording(file, setProgress),
     onSuccess: (response) => {
-      navigate(`/recordings/${response.data.data.id}/processing`)
+      navigate(`/recordings/${response.data.id}/processing`)
     },
     onSettled: () => {
       setProgress(0)

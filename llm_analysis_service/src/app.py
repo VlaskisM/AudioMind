@@ -2,18 +2,18 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from llm_analysis_service.src.configs.mongodb import mongo_settings
-from llm_analysis_service.src.configs.openai import openai_settings
-from llm_analysis_service.src.db.mongodb import (
+from src.configs.mongodb import mongo_settings
+from src.configs.gigachat import gigachat_settings
+from src.db.mongodb import (
     MongoDBClient,
     DiarizationReader,
     AnalysisRepository,
     ChatSessionRepository,
 )
-from llm_analysis_service.src.services.chunking import ChunkingService
-from llm_analysis_service.src.services.llm_client import LLMClient
-from llm_analysis_service.src.services.analysis import AnalysisService
-from llm_analysis_service.src.services.chat import ChatService
+from src.services.chunking import ChunkingService
+from src.services.llm_client import LLMClient
+from src.services.analysis import AnalysisService
+from src.services.chat import ChatService
 
 
 @asynccontextmanager
@@ -30,17 +30,17 @@ async def lifespan(app: FastAPI):
     )
 
     llm_client = LLMClient(
-        api_key=openai_settings.OPENAI_API_KEY,
-        model=openai_settings.OPENAI_MODEL,
-        temperature=openai_settings.OPENAI_TEMPERATURE,
-        max_tokens=openai_settings.OPENAI_MAX_TOKENS,
+        credentials=gigachat_settings.GIGACHAT_CREDENTIALS,
+        model=gigachat_settings.GIGACHAT_MODEL,
+        temperature=gigachat_settings.GIGACHAT_TEMPERATURE,
+        max_tokens=gigachat_settings.GIGACHAT_MAX_TOKENS,
     )
 
     diarization_reader = DiarizationReader(client=mongodb_client)
     analysis_repo = AnalysisRepository(client=mongodb_client)
     await analysis_repo.ensure_indexes()
 
-    chunking_service = ChunkingService(model=openai_settings.OPENAI_MODEL)
+    chunking_service = ChunkingService()
 
     analysis_service = AnalysisService(
         analysis_repo=analysis_repo,

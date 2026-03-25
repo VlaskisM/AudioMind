@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from llm_analysis_service.src.db.mongodb.diarization_reader import DiarizationReader
-from llm_analysis_service.src.web.schemas.transcript import TranscriptResponse, TranscriptSegment
-from llm_analysis_service.src.web.dependencies import get_diarization_reader
+from src.db.mongodb.diarization_reader import DiarizationReader
+from src.web.schemas.transcript import TranscriptResponse, TranscriptSegment
+from src.web.dependencies import get_diarization_reader
 
 router = APIRouter(prefix="/analysis/recordings", tags=["transcript"])
 

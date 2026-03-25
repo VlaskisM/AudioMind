@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from llm_analysis_service.src.services.analysis import AnalysisError
-from llm_analysis_service.src.services.chat import ChatService
-from llm_analysis_service.src.web.schemas.chat import (
+from src.services.analysis import AnalysisError
+from src.services.chat import ChatService
+from src.web.schemas.chat import (
     ChatRequest,
     ChatResponse,
     ChatHistoryResponse,
 )
-from llm_analysis_service.src.web.schemas.common import BaseResponse
-from llm_analysis_service.src.web.dependencies import get_chat_service
+from src.web.schemas.common import BaseResponse
+from src.web.dependencies import get_chat_service
 
 router = APIRouter(prefix="/analysis", tags=["chat"])
 

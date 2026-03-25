@@ -1,26 +1,25 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
-from llm_analysis_service.src.services.analysis import AnalysisService, AnalysisError
-from llm_analysis_service.src.web.schemas.analysis import (
+from src.services.analysis import AnalysisService, AnalysisError
+from src.web.schemas.analysis import (
     SummaryResponse,
     KeyPointsResponse,
     ActionItemsResponse,
     FaqResponse,
 )
+from src.web.dependencies import get_analysis_service
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
 
-def _get_service(request: Request) -> AnalysisService:
-    """Получить AnalysisService из app.state."""
-    return request.app.state.analysis_service
-
-
 @router.post("/{recording_id}/summary", response_model=SummaryResponse)
-async def get_summary(recording_id: int, request: Request) -> SummaryResponse:
+async def get_summary(
+    recording_id: int,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> SummaryResponse:
     """Получить краткое содержание записи."""
     try:
-        result = await _get_service(request).get_summary(recording_id)
+        result = await service.get_summary(recording_id)
         return SummaryResponse(status="ok", data=result)
     except AnalysisError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -29,10 +28,13 @@ async def get_summary(recording_id: int, request: Request) -> SummaryResponse:
 
 
 @router.post("/{recording_id}/key-points", response_model=KeyPointsResponse)
-async def get_key_points(recording_id: int, request: Request) -> KeyPointsResponse:
+async def get_key_points(
+    recording_id: int,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> KeyPointsResponse:
     """Получить ключевые тезисы записи с привязкой к спикерам."""
     try:
-        result = await _get_service(request).get_key_points(recording_id)
+        result = await service.get_key_points(recording_id)
         return KeyPointsResponse(status="ok", data=result)
     except AnalysisError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -41,10 +43,13 @@ async def get_key_points(recording_id: int, request: Request) -> KeyPointsRespon
 
 
 @router.post("/{recording_id}/action-items", response_model=ActionItemsResponse)
-async def get_action_items(recording_id: int, request: Request) -> ActionItemsResponse:
+async def get_action_items(
+    recording_id: int,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> ActionItemsResponse:
     """Получить action items записи с ответственными."""
     try:
-        result = await _get_service(request).get_action_items(recording_id)
+        result = await service.get_action_items(recording_id)
         return ActionItemsResponse(status="ok", data=result)
     except AnalysisError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -53,10 +58,13 @@ async def get_action_items(recording_id: int, request: Request) -> ActionItemsRe
 
 
 @router.post("/{recording_id}/faq", response_model=FaqResponse)
-async def get_faq(recording_id: int, request: Request) -> FaqResponse:
+async def get_faq(
+    recording_id: int,
+    service: AnalysisService = Depends(get_analysis_service),
+) -> FaqResponse:
     """Получить FAQ по содержанию записи."""
     try:
-        result = await _get_service(request).get_faq(recording_id)
+        result = await service.get_faq(recording_id)
         return FaqResponse(status="ok", data=result)
     except AnalysisError as e:
         raise HTTPException(status_code=404, detail=str(e))
