@@ -13,6 +13,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { RecordingSidebar } from '@/components/workspace/RecordingSidebar'
 import { ChatPanel } from '@/components/workspace/ChatPanel'
+import { AnalysisPanel } from '@/components/workspace/AnalysisPanel'
 
 export default function WorkspacePage() {
   const { id } = useParams<{ id: string }>()
@@ -43,10 +44,7 @@ export default function WorkspacePage() {
               collapsible
               collapsedSize={0}
             >
-              {/* Placeholder for analysis/transcript panel - plan 08-03 */}
-              <div className="flex h-full items-center justify-center text-muted-foreground">
-                Панель анализа
-              </div>
+              <AnalysisPanel recordingId={id!} />
             </ResizablePanel>
           </ResizablePanelGroup>
         </div>
