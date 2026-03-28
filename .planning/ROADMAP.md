@@ -27,7 +27,7 @@ See v1.1-MILESTONE-AUDIT.md for details.
 ### 🚧 v1.2 Infrastructure & UX (In Progress)
 
 - [x] **Phase 9: Nginx Reverse Proxy** - Единая точка входа на порту 80, маршрутизация ко всем сервисам (completed 2026-03-28)
-- [ ] **Phase 10: JWT Authentication** - Регистрация, вход, защита эндпоинтов, привязка данных к пользователю
+- [x] **Phase 10: JWT Authentication** - Регистрация, вход, защита эндпоинтов, привязка данных к пользователю (completed 2026-03-28)
 - [ ] **Phase 11: UX Redesign** - Workspace как главная, загрузка через сайдбар, чат-пузыри, анимации
 - [ ] **Phase 12: Unit Tests** - Покрытие тестами data_ingress (сервисы, репозитории, UoW, auth)
 
@@ -113,6 +113,6 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12
 | 7. Upload & Processing | v1.1 | 2/2 | Complete | 2026-03-24 |
 | 8. Workspace | v1.1 | 2/2 | Complete | 2026-03-25 |
 | 9. Nginx Reverse Proxy | 2/2 | Complete   | 2026-03-28 | - |
-| 10. JWT Authentication | 2/3 | In Progress|  | - |
+| 10. JWT Authentication | 3/3 | Complete   | 2026-03-28 | - |
 | 11. UX Redesign | v1.2 | 0/? | Not started | - |
 | 12. Unit Tests | v1.2 | 0/? | Not started | - |

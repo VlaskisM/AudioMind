@@ -21,9 +21,9 @@
 - [x] **AUTH-04**: Все /analysis/* эндпоинты требуют JWT
 - [x] **AUTH-05**: Список записей фильтруется по user_id из JWT
 - [x] **AUTH-06**: Загрузка записи привязывает user_id из JWT (не из query param)
-- [ ] **AUTH-07**: Фронтенд: страница логина и регистрации
-- [ ] **AUTH-08**: Фронтенд: axios interceptor для Authorization header
-- [ ] **AUTH-09**: Фронтенд: редирект неавторизованных на /login
+- [x] **AUTH-07**: Фронтенд: страница логина и регистрации
+- [x] **AUTH-08**: Фронтенд: axios interceptor для Authorization header
+- [x] **AUTH-09**: Фронтенд: редирект неавторизованных на /login
 
 ### UX Redesign
 
@@ -74,9 +74,9 @@
 | AUTH-04 | Phase 10 | Complete |
 | AUTH-05 | Phase 10 | Complete |
 | AUTH-06 | Phase 10 | Complete |
-| AUTH-07 | Phase 10 | Pending |
-| AUTH-08 | Phase 10 | Pending |
-| AUTH-09 | Phase 10 | Pending |
+| AUTH-07 | Phase 10 | Complete |
+| AUTH-08 | Phase 10 | Complete |
+| AUTH-09 | Phase 10 | Complete |
 | UX-01 | Phase 11 | Pending |
 | UX-02 | Phase 11 | Pending |
 | UX-03 | Phase 11 | Pending |
