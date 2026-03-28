@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class CORSSettings(BaseSettings):
-    CORS_ORIGINS: str = "http://localhost:5173"
+    CORS_ORIGINS: str = "http://localhost,http://localhost:5173"
 
     @property
     def origins_list(self) -> list[str]:
