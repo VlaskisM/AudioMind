@@ -44,14 +44,19 @@ class RecordingRepository(AbstractRecordingRepository):
         await self.session.delete(recording)
         return True
 
-    async def get_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
-        count_result = await self.session.execute(
-            select(func.count()).select_from(Recording)
-        )
+    async def get_page(self, offset: int = 0, limit: int = 20, user_id: int | None = None) -> tuple[list[Recording], int]:
+        count_query = select(func.count()).select_from(Recording)
+        items_query = select(Recording).order_by(Recording.ts.desc())
+
+        if user_id is not None:
+            count_query = count_query.where(Recording.user_id == user_id)
+            items_query = items_query.where(Recording.user_id == user_id)
+
+        count_result = await self.session.execute(count_query)
         total = count_result.scalar_one()
 
         items_result = await self.session.execute(
-            select(Recording).order_by(Recording.ts.desc()).offset(offset).limit(limit)
+            items_query.offset(offset).limit(limit)
         )
         items = list(items_result.scalars().all())
         return items, total

@@ -35,7 +35,7 @@ class AbstractRecordingRepository(ABC):
         ...
 
     @abstractmethod
-    async def get_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+    async def get_page(self, offset: int = 0, limit: int = 20, user_id: int | None = None) -> tuple[list[Recording], int]:
         ...
 
     @abstractmethod
