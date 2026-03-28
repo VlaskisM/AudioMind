@@ -23,16 +23,16 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 12 of 12 (Unit Tests)
-Plan: 1 of 1 in current phase -- COMPLETE
-Status: Phase 12 Plan 01 Complete
-Last activity: 2026-03-28 — Completed 12-01 (data_ingress RecordingService + UnitOfWork tests)
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Phase 12 Plan 02 Complete
+Last activity: 2026-03-28 — Completed 12-02 (RecordingRepository + AuthService unit tests)
 
 Progress: [████████████████████] 100% (24/24 plans completed)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22 (v1.0: 8, v1.1: 8, v1.2: 5, v1.3: 1)
+- Total plans completed: 23 (v1.0: 8, v1.1: 8, v1.2: 5, v1.3: 2)
 - Average duration: ~30 min
 - Total execution time: ~8 hours
 
@@ -64,6 +64,8 @@ Progress: [████████████████████] 100% (2
 - [Phase 11-02]: HoverCard used instead of Tooltip for processing status -- avoids sidebar tooltip conflicts
 - [Phase 12-01]: pytest-asyncio 0.24.0 with asyncio_mode=auto for data_ingress tests
 - [Phase 12-01]: publish() mocked as sync MagicMock, publisher.publish() as async -- matches real impl
+- [Phase 12-02]: MagicMock(spec=Recording) instead of Recording.__new__ -- SQLAlchemy instrumented attributes need mapper init
+- [Phase 12-02]: AuthService tests patch at src.services.auth.UserRepository and src.services.auth.password_hash
 
 ### Pending Todos
 
@@ -77,5 +79,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Completed 12-01-PLAN.md (data_ingress RecordingService + UnitOfWork unit tests)
+Stopped at: Completed 12-02-PLAN.md (RecordingRepository + AuthService unit tests)
 Resume file: None

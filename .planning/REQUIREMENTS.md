@@ -38,8 +38,8 @@
 
 - [x] **TEST-01**: Unit тесты RecordingService (upload, get_page, status transitions)
 - [x] **TEST-02**: Unit тесты UnitOfWork (commit/rollback координация)
-- [ ] **TEST-03**: Unit тесты RecordingRepository (add, get_by_id, update_status, get_page)
-- [ ] **TEST-04**: Unit тесты AuthService (register, login, verify_token)
+- [x] **TEST-03**: Unit тесты RecordingRepository (add, get_by_id, update_status, get_page)
+- [x] **TEST-04**: Unit тесты AuthService (register, login, verify_token)
 
 ## Future Requirements
 
@@ -85,8 +85,8 @@
 | UX-06 | Phase 11 | Complete |
 | TEST-01 | Phase 12 | Complete |
 | TEST-02 | Phase 12 | Complete |
-| TEST-03 | Phase 12 | Pending |
-| TEST-04 | Phase 12 | Pending |
+| TEST-03 | Phase 12 | Complete |
+| TEST-04 | Phase 12 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 24 total
