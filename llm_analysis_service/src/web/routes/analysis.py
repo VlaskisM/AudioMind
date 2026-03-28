@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.services.analysis import AnalysisService, AnalysisError
@@ -8,6 +10,7 @@ from src.web.schemas.analysis import (
     FaqResponse,
 )
 from src.web.dependencies import get_analysis_service
+from src.web.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
@@ -15,6 +18,7 @@ router = APIRouter(prefix="/analysis", tags=["analysis"])
 @router.post("/{recording_id}/summary", response_model=SummaryResponse)
 async def get_summary(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: AnalysisService = Depends(get_analysis_service),
 ) -> SummaryResponse:
     """Получить краткое содержание записи."""
@@ -30,6 +34,7 @@ async def get_summary(
 @router.post("/{recording_id}/key-points", response_model=KeyPointsResponse)
 async def get_key_points(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: AnalysisService = Depends(get_analysis_service),
 ) -> KeyPointsResponse:
     """Получить ключевые тезисы записи с привязкой к спикерам."""
@@ -45,6 +50,7 @@ async def get_key_points(
 @router.post("/{recording_id}/action-items", response_model=ActionItemsResponse)
 async def get_action_items(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: AnalysisService = Depends(get_analysis_service),
 ) -> ActionItemsResponse:
     """Получить action items записи с ответственными."""
@@ -60,6 +66,7 @@ async def get_action_items(
 @router.post("/{recording_id}/faq", response_model=FaqResponse)
 async def get_faq(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: AnalysisService = Depends(get_analysis_service),
 ) -> FaqResponse:
     """Получить FAQ по содержанию записи."""
