@@ -113,6 +113,6 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12
 | 7. Upload & Processing | v1.1 | 2/2 | Complete | 2026-03-24 |
 | 8. Workspace | v1.1 | 2/2 | Complete | 2026-03-25 |
 | 9. Nginx Reverse Proxy | 2/2 | Complete   | 2026-03-28 | - |
-| 10. JWT Authentication | 1/3 | In Progress|  | - |
+| 10. JWT Authentication | 2/3 | In Progress|  | - |
 | 11. UX Redesign | v1.2 | 0/? | Not started | - |
 | 12. Unit Tests | v1.2 | 0/? | Not started | - |
