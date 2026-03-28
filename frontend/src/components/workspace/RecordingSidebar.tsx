@@ -1,9 +1,11 @@
 import { useNavigate, useParams, Link } from 'react-router'
-import { Plus } from 'lucide-react'
+import { Plus, LogOut } from 'lucide-react'
 import { useRecordings } from '@/hooks/useRecordings'
+import { useAuthStore } from '@/stores/authStore'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarGroup,
   SidebarMenu,
@@ -18,6 +20,8 @@ export function RecordingSidebar() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const { data, isLoading } = useRecordings()
+  const user = useAuthStore((s) => s.user)
+  const logout = useAuthStore((s) => s.logout)
 
   const recordings = data?.data ?? []
 
@@ -62,6 +66,22 @@ export function RecordingSidebar() {
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="px-4 py-2">
+        <div className="flex items-center justify-between">
+          <span className="truncate text-xs text-muted-foreground">{user?.email}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7"
+            onClick={() => {
+              logout()
+              navigate('/login')
+            }}
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   )
 }
