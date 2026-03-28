@@ -1,7 +1,9 @@
-import { useNavigate, useParams, Link } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { Plus, LogOut } from 'lucide-react'
 import { useRecordings } from '@/hooks/useRecordings'
 import { useAuthStore } from '@/stores/authStore'
+import { useWorkspaceStore } from '@/stores/workspaceStore'
+import { UploadModal } from '@/components/workspace/UploadModal'
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +24,7 @@ export function RecordingSidebar() {
   const { data, isLoading } = useRecordings()
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
+  const setUploadModalOpen = useWorkspaceStore((s) => s.setUploadModalOpen)
 
   const recordings = data?.data ?? []
 
@@ -29,10 +32,8 @@ export function RecordingSidebar() {
     <Sidebar>
       <SidebarHeader className="flex flex-row items-center justify-between px-4 py-2">
         <span className="text-sm font-semibold">Записи</span>
-        <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-          <Link to="/">
-            <Plus className="h-4 w-4" />
-          </Link>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setUploadModalOpen(true)}>
+          <Plus className="h-4 w-4" />
         </Button>
       </SidebarHeader>
       <SidebarContent>
@@ -82,6 +83,7 @@ export function RecordingSidebar() {
           </Button>
         </div>
       </SidebarFooter>
+      <UploadModal />
     </Sidebar>
   )
 }
