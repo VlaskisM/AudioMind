@@ -36,8 +36,8 @@
 
 ### Testing
 
-- [ ] **TEST-01**: Unit тесты RecordingService (upload, get_page, status transitions)
-- [ ] **TEST-02**: Unit тесты UnitOfWork (commit/rollback координация)
+- [x] **TEST-01**: Unit тесты RecordingService (upload, get_page, status transitions)
+- [x] **TEST-02**: Unit тесты UnitOfWork (commit/rollback координация)
 - [ ] **TEST-03**: Unit тесты RecordingRepository (add, get_by_id, update_status, get_page)
 - [ ] **TEST-04**: Unit тесты AuthService (register, login, verify_token)
 
@@ -83,8 +83,8 @@
 | UX-04 | Phase 11 | Complete |
 | UX-05 | Phase 11 | Complete |
 | UX-06 | Phase 11 | Complete |
-| TEST-01 | Phase 12 | Pending |
-| TEST-02 | Phase 12 | Pending |
+| TEST-01 | Phase 12 | Complete |
+| TEST-02 | Phase 12 | Complete |
 | TEST-03 | Phase 12 | Pending |
 | TEST-04 | Phase 12 | Pending |
 

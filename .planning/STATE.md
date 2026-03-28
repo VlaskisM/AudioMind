@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Infrastructure & UX
-status: unknown
-last_updated: "2026-03-28T11:32:39.597Z"
+status: in-progress
+last_updated: "2026-03-28T12:27:00.000Z"
 progress:
-  total_phases: 10
-  completed_phases: 2
-  total_plans: 19
-  completed_plans: 7
+  total_phases: 12
+  completed_phases: 3
+  total_plans: 24
+  completed_plans: 10
 ---
 
 # State: Speechmate
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 
 ## Current Position
 
-Phase: 11 of 12 (UX Redesign)
-Plan: 2 of 2 in current phase -- COMPLETE
-Status: Phase 11 Complete
-Last activity: 2026-03-28 — Completed 11-02 (Visual polish: chat bubbles, shimmer, hover progress)
+Phase: 12 of 12 (Unit Tests)
+Plan: 1 of 1 in current phase -- COMPLETE
+Status: Phase 12 Plan 01 Complete
+Last activity: 2026-03-28 — Completed 12-01 (data_ingress RecordingService + UnitOfWork tests)
 
-Progress: [████████████████████] 100% (23/24 plans completed)
+Progress: [████████████████████] 100% (24/24 plans completed)
 
 ## Performance Metrics
 
@@ -62,6 +62,8 @@ Progress: [████████████████████] 100% (2
 - [Phase 11-01]: shadcn base-nova uses @base-ui/react Dialog (not Radix)
 - [Phase 11-01]: UploadModal rendered inside Sidebar -- portal handles positioning
 - [Phase 11-02]: HoverCard used instead of Tooltip for processing status -- avoids sidebar tooltip conflicts
+- [Phase 12-01]: pytest-asyncio 0.24.0 with asyncio_mode=auto for data_ingress tests
+- [Phase 12-01]: publish() mocked as sync MagicMock, publisher.publish() as async -- matches real impl
 
 ### Pending Todos
 
@@ -75,5 +77,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Completed 11-02-PLAN.md (Visual polish: chat bubbles, shimmer, hover progress)
+Stopped at: Completed 12-01-PLAN.md (data_ingress RecordingService + UnitOfWork unit tests)
 Resume file: None
