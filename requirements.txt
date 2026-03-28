@@ -9,3 +9,5 @@ psycopg[binary]==3.3.3 # Синхронный PostgreSQL драйвер (для 
 aioboto3==15.5.0
 aio-pika==9.5.4
 python-multipart==0.0.20 # Для загрузки файлов через FastAPI (Form, UploadFile)
+pyjwt>=2.8.0 # JWT токены для аутентификации
+pwdlib[argon2]>=0.2.0 # Хеширование паролей (Argon2)
