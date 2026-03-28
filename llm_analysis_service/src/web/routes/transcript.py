@@ -1,8 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.db.mongodb.diarization_reader import DiarizationReader
 from src.web.schemas.transcript import TranscriptResponse, TranscriptSegment
 from src.web.dependencies import get_diarization_reader
+from src.web.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/analysis/recordings", tags=["transcript"])
 
@@ -10,6 +13,7 @@ router = APIRouter(prefix="/analysis/recordings", tags=["transcript"])
 @router.get("/{recording_id}/transcript", response_model=TranscriptResponse)
 async def get_transcript(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     diarization_reader: DiarizationReader = Depends(get_diarization_reader),
 ):
     """Получить диаризованную транскрипцию записи."""

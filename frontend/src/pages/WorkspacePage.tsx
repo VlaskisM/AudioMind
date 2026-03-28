@@ -14,6 +14,7 @@ import { Separator } from '@/components/ui/separator'
 import { RecordingSidebar } from '@/components/workspace/RecordingSidebar'
 import { ChatPanel } from '@/components/workspace/ChatPanel'
 import { AnalysisPanel } from '@/components/workspace/AnalysisPanel'
+import { Upload } from 'lucide-react'
 
 export default function WorkspacePage() {
   const { id } = useParams<{ id: string }>()
@@ -21,7 +22,9 @@ export default function WorkspacePage() {
 
   const recordings = data?.data ?? []
   const current = recordings.find((r) => String(r.id) === id)
-  const title = current?.original_filename ?? `Recording ${id}`
+  const title = id
+    ? (current?.original_filename ?? `Recording ${id}`)
+    : 'Speechmate'
 
   return (
     <SidebarProvider>
@@ -33,20 +36,33 @@ export default function WorkspacePage() {
           <h1 className="text-sm font-medium">{title}</h1>
         </header>
         <div className="flex-1 overflow-hidden">
-          <ResizablePanelGroup orientation="horizontal">
-            <ResizablePanel defaultSize={50} minSize={30}>
-              <ChatPanel recordingId={id!} />
-            </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel
-              defaultSize={50}
-              minSize={15}
-              collapsible
-              collapsedSize={0}
-            >
-              <AnalysisPanel recordingId={id!} />
-            </ResizablePanel>
-          </ResizablePanelGroup>
+          {id ? (
+            <ResizablePanelGroup orientation="horizontal">
+              <ResizablePanel defaultSize={50} minSize={30}>
+                <ChatPanel recordingId={id} />
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel
+                defaultSize={50}
+                minSize={15}
+                collapsible
+                collapsedSize={0}
+              >
+                <AnalysisPanel recordingId={id} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          ) : recordings.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center gap-4 text-muted-foreground">
+              <Upload className="h-12 w-12" />
+              <p className="text-lg font-medium">Добавьте первую запись</p>
+              <p className="text-sm">Нажмите &quot;+&quot; в сайдбаре, чтобы загрузить аудиофайл</p>
+            </div>
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-4 text-muted-foreground">
+              <p className="text-lg font-medium">Выберите запись из сайдбара</p>
+              <p className="text-sm">Или нажмите &quot;+&quot; чтобы загрузить новый файл</p>
+            </div>
+          )}
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -1,8 +1,28 @@
 import axios from 'axios'
+import { useAuthStore } from '../stores/authStore'
 
 export const ingressApi = axios.create({
   baseURL: '/api/ingress',
 })
+
+ingressApi.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().token
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+ingressApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      useAuthStore.getState().logout()
+      window.location.href = '/login'
+    }
+    return Promise.reject(error)
+  }
+)
 
 export interface RecordingResponse {
   id: number
@@ -41,7 +61,7 @@ export function uploadRecording(
   formData.append('file', file)
 
   return ingressApi.post<RecordingResponse>(
-    '/recordings/upload?user_id=1',
+    '/recordings/upload',
     formData,
     {
       timeout: 0,

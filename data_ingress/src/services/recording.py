@@ -57,9 +57,9 @@ class RecordingService:
         async with self._uow_factory() as uow:
             return await uow.recordings.get_by_id(recording_id)
 
-    async def get_recordings_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+    async def get_recordings_page(self, offset: int = 0, limit: int = 20, user_id: int | None = None) -> tuple[list[Recording], int]:
         async with self._uow_factory() as uow:
-            return await uow.recordings.get_page(offset, limit)
+            return await uow.recordings.get_page(offset, limit, user_id=user_id)
 
     async def update_recording_status(
         self, recording_id: int, status: str, error_message: str | None = None

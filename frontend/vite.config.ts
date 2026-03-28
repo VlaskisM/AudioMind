@@ -16,17 +16,5 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     allowedHosts: true,
-    proxy: {
-      '/api/ingress': {
-        target: 'http://speechmate-app:8000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/ingress/, ''),
-      },
-      '/api/analysis': {
-        target: 'http://speechmate-llm-analysis:8003',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/analysis/, ''),
-      },
-    },
   },
 })
