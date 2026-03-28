@@ -28,7 +28,7 @@ See v1.1-MILESTONE-AUDIT.md for details.
 
 - [x] **Phase 9: Nginx Reverse Proxy** - Единая точка входа на порту 80, маршрутизация ко всем сервисам (completed 2026-03-28)
 - [x] **Phase 10: JWT Authentication** - Регистрация, вход, защита эндпоинтов, привязка данных к пользователю (completed 2026-03-28)
-- [ ] **Phase 11: UX Redesign** - Workspace как главная, загрузка через сайдбар, чат-пузыри, анимации
+- [x] **Phase 11: UX Redesign** - Workspace как главная, загрузка через сайдбар, чат-пузыри, анимации (completed 2026-03-28)
 - [ ] **Phase 12: Unit Tests** - Покрытие тестами data_ingress (сервисы, репозитории, UoW, auth)
 
 ## Phase Details
@@ -91,11 +91,11 @@ Plans:
   2. RecordingService: тесты проверяют upload, получение списка записей, смену статусов
   3. UnitOfWork: тесты проверяют commit и rollback координацию (успех и ошибка)
   4. AuthService: тесты проверяют регистрацию, вход, верификацию токена (валидный и невалидный)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: TBD
-- [ ] 12-02: TBD
+- [ ] 12-01-PLAN.md — Инфраструктура pytest + тесты RecordingService и UnitOfWork (TEST-01, TEST-02) [wave 1]
+- [ ] 12-02-PLAN.md — Тесты RecordingRepository и AuthService (TEST-03, TEST-04) [wave 2, depends: 12-01]
 
 ## Progress
 
@@ -114,5 +114,5 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12
 | 8. Workspace | v1.1 | 2/2 | Complete | 2026-03-25 |
 | 9. Nginx Reverse Proxy | 2/2 | Complete   | 2026-03-28 | - |
 | 10. JWT Authentication | 3/3 | Complete    | 2026-03-28 | - |
-| 11. UX Redesign | 1/2 | In Progress|  | - |
-| 12. Unit Tests | v1.2 | 0/? | Not started | - |
+| 11. UX Redesign | 2/2 | Complete    | 2026-03-28 | - |
+| 12. Unit Tests | v1.2 | 0/2 | Not started | - |

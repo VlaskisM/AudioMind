@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 11 of 12 (UX Redesign)
-Plan: 1 of 3 in current phase -- COMPLETE
-Status: Executing Phase 11
-Last activity: 2026-03-28 — Completed 11-01 (Workspace routing and modal upload)
+Plan: 2 of 2 in current phase -- COMPLETE
+Status: Phase 11 Complete
+Last activity: 2026-03-28 — Completed 11-02 (Visual polish: chat bubbles, shimmer, hover progress)
 
-Progress: [████████████████████] 100% (22/24 plans completed)
+Progress: [████████████████████] 100% (23/24 plans completed)
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [████████████████████] 100% (2
 - [Phase 10-03]: Removed hardcoded ?user_id=1 from upload -- user_id from JWT
 - [Phase 11-01]: shadcn base-nova uses @base-ui/react Dialog (not Radix)
 - [Phase 11-01]: UploadModal rendered inside Sidebar -- portal handles positioning
+- [Phase 11-02]: HoverCard used instead of Tooltip for processing status -- avoids sidebar tooltip conflicts
 
 ### Pending Todos
 
@@ -74,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Completed 11-01-PLAN.md (Workspace routing and modal upload)
+Stopped at: Completed 11-02-PLAN.md (Visual polish: chat bubbles, shimmer, hover progress)
 Resume file: None
