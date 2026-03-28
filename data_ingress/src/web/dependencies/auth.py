@@ -24,9 +24,10 @@ async def get_current_user(
             auth_settings.JWT_SECRET,
             algorithms=[auth_settings.JWT_ALGORITHM],
         )
-        user_id: int | None = payload.get("sub")
-        if user_id is None:
+        sub: str | None = payload.get("sub")
+        if sub is None:
             raise credentials_exception
+        user_id = int(sub)
     except InvalidTokenError:
         raise credentials_exception
     return user_id
