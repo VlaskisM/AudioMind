@@ -6,6 +6,7 @@ export function useRecordings(offset = 0, limit = 50) {
     queryKey: ['recordings', offset, limit],
     queryFn: () => getRecordings(offset, limit),
     select: (response) => response.data,
-    staleTime: 30_000,
+    staleTime: 5_000,
+    refetchInterval: 5_000,
   })
 }
