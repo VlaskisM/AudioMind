@@ -27,9 +27,9 @@
 
 ### UX Redesign
 
-- [ ] **UX-01**: Workspace — главная страница (/ → WorkspacePage)
-- [ ] **UX-02**: Кнопка "+" в сайдбаре открывает модал загрузки файла
-- [ ] **UX-03**: Пустое состояние workspace с подсказкой "Добавьте первую запись"
+- [x] **UX-01**: Workspace — главная страница (/ → WorkspacePage)
+- [x] **UX-02**: Кнопка "+" в сайдбаре открывает модал загрузки файла
+- [x] **UX-03**: Пустое состояние workspace с подсказкой "Добавьте первую запись"
 - [ ] **UX-04**: Чат-пузыри: сообщения пользователя справа, AI слева, с рамками и фоном
 - [ ] **UX-05**: Переливающаяся shimmer-анимация на названии записи при обработке
 - [ ] **UX-06**: Прогресс-бар этапов при наведении на запись в сайдбаре
@@ -77,9 +77,9 @@
 | AUTH-07 | Phase 10 | Complete |
 | AUTH-08 | Phase 10 | Complete |
 | AUTH-09 | Phase 10 | Complete |
-| UX-01 | Phase 11 | Pending |
-| UX-02 | Phase 11 | Pending |
-| UX-03 | Phase 11 | Pending |
+| UX-01 | Phase 11 | Complete |
+| UX-02 | Phase 11 | Complete |
+| UX-03 | Phase 11 | Complete |
 | UX-04 | Phase 11 | Pending |
 | UX-05 | Phase 11 | Pending |
 | UX-06 | Phase 11 | Pending |

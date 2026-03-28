@@ -79,8 +79,8 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 11-01: TBD
-- [ ] 11-02: TBD
+- [ ] 11-01-PLAN.md — Workspace как главная, модальная загрузка, empty state (UX-01, UX-02, UX-03) [wave 1]
+- [ ] 11-02-PLAN.md — Чат-пузыри, shimmer-анимация, hover progress (UX-04, UX-05, UX-06) [wave 2, depends: 11-01]
 
 ### Phase 12: Unit Tests
 **Goal**: Ключевая бизнес-логика data_ingress покрыта тестами — сервисы, репозитории, UoW и auth
@@ -113,6 +113,6 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12
 | 7. Upload & Processing | v1.1 | 2/2 | Complete | 2026-03-24 |
 | 8. Workspace | v1.1 | 2/2 | Complete | 2026-03-25 |
 | 9. Nginx Reverse Proxy | 2/2 | Complete   | 2026-03-28 | - |
-| 10. JWT Authentication | 3/3 | Complete   | 2026-03-28 | - |
-| 11. UX Redesign | v1.2 | 0/? | Not started | - |
+| 10. JWT Authentication | 3/3 | Complete    | 2026-03-28 | - |
+| 11. UX Redesign | 1/2 | In Progress|  | - |
 | 12. Unit Tests | v1.2 | 0/? | Not started | - |

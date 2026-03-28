@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Infrastructure & UX
 status: unknown
-last_updated: "2026-03-28T10:11:05.494Z"
+last_updated: "2026-03-28T11:32:39.597Z"
 progress:
   total_phases: 10
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 19
-  completed_plans: 5
+  completed_plans: 7
 ---
 
 # State: Speechmate
@@ -18,21 +18,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** Пользователь загружает аудио и получает структурированный анализ содержания через LLM
-**Current focus:** Phase 10 — JWT Authentication (v1.2)
+**Current focus:** Phase 11 — UX Redesign
 
 ## Current Position
 
-Phase: 10 of 12 (JWT Authentication) -- COMPLETE
-Plan: 3 of 3 in current phase -- COMPLETE
-Status: Phase 10 Complete
-Last activity: 2026-03-28 — Completed 10-03 (Frontend auth integration)
+Phase: 11 of 12 (UX Redesign)
+Plan: 1 of 3 in current phase -- COMPLETE
+Status: Executing Phase 11
+Last activity: 2026-03-28 — Completed 11-01 (Workspace routing and modal upload)
 
-Progress: [████████████████████] 100% (21/21 plans completed)
+Progress: [████████████████████] 100% (22/24 plans completed)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21 (v1.0: 8, v1.1: 8, v1.2: 5)
+- Total plans completed: 22 (v1.0: 8, v1.1: 8, v1.2: 5, v1.3: 1)
 - Average duration: ~30 min
 - Total execution time: ~8 hours
 
@@ -59,6 +59,8 @@ Progress: [████████████████████] 100% (2
 - [Phase 10-03]: JWT sub claim uses string (not int) per RFC 7519
 - [Phase 10-03]: Logout button added to sidebar and upload page for UX completeness
 - [Phase 10-03]: Removed hardcoded ?user_id=1 from upload -- user_id from JWT
+- [Phase 11-01]: shadcn base-nova uses @base-ui/react Dialog (not Radix)
+- [Phase 11-01]: UploadModal rendered inside Sidebar -- portal handles positioning
 
 ### Pending Todos
 
@@ -72,5 +74,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Completed 10-03-PLAN.md (Frontend auth integration) -- Phase 10 complete
+Stopped at: Completed 11-01-PLAN.md (Workspace routing and modal upload)
 Resume file: None
