@@ -8,6 +8,7 @@ from src.db.relational.db import Base
 
 # Импорт всех моделей, чтобы Alembic видел их при автогенерации
 from src.db.relational.entities.recording import Recording  # noqa: F401
+from src.db.relational.entities.user import User  # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", postgres_settings.db_url_sync)

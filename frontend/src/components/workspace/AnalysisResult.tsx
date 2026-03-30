@@ -46,6 +46,11 @@ export function AnalysisResult({ recordingId, type }: AnalysisResultProps) {
   if (!result && !mutation.isPending) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4">
+        {mutation.isError && (
+          <p className="text-sm text-destructive">
+            Ошибка генерации. Попробуйте ещё раз.
+          </p>
+        )}
         <p className="text-muted-foreground">
           Нажмите кнопку для генерации анализа
         </p>
@@ -70,9 +75,23 @@ export function AnalysisResult({ recordingId, type }: AnalysisResultProps) {
     <ScrollArea className="h-full">
       <div className="p-4">
         {type === 'summary' && <SummaryView data={result as SummaryData} />}
-        {type === 'key-points' && <KeyPointsView data={result as KeyPoint[]} />}
-        {type === 'action-items' && <ActionItemsView data={result as ActionItem[]} />}
-        {type === 'faq' && <FaqView data={result as FaqItem[]} />}
+        {type === 'key-points' && (
+          <KeyPointsView
+            data={(result as { key_points?: KeyPoint[] })?.key_points ?? []}
+          />
+        )}
+        {type === 'action-items' && (
+          <ActionItemsView
+            data={
+              (result as { action_items?: ActionItem[] })?.action_items ?? []
+            }
+          />
+        )}
+        {type === 'faq' && (
+          <FaqView
+            data={(result as { faq?: FaqItem[] })?.faq ?? []}
+          />
+        )}
       </div>
     </ScrollArea>
   )
@@ -96,6 +115,14 @@ function SummaryView({ data }: { data: SummaryData }) {
 }
 
 function KeyPointsView({ data }: { data: KeyPoint[] }) {
+  if (!data.length) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Ключевые тезисы не найдены.
+      </p>
+    )
+  }
+
   return (
     <div className="space-y-3">
       {data.map((item, i) => (
@@ -113,6 +140,12 @@ function KeyPointsView({ data }: { data: KeyPoint[] }) {
 }
 
 function ActionItemsView({ data }: { data: ActionItem[] }) {
+  if (!data.length) {
+    return (
+      <p className="text-sm text-muted-foreground">Задачи не найдены.</p>
+    )
+  }
+
   return (
     <div className="space-y-3">
       {data.map((item, i) => (
@@ -134,6 +167,12 @@ function ActionItemsView({ data }: { data: ActionItem[] }) {
 
 function FaqView({ data }: { data: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  if (!data.length) {
+    return (
+      <p className="text-sm text-muted-foreground">FAQ не найден.</p>
+    )
+  }
 
   return (
     <div className="space-y-2">

@@ -57,9 +57,9 @@ class RecordingService:
         async with self._uow_factory() as uow:
             return await uow.recordings.get_by_id(recording_id)
 
-    async def get_recordings_page(self, offset: int = 0, limit: int = 20) -> tuple[list[Recording], int]:
+    async def get_recordings_page(self, offset: int = 0, limit: int = 20, user_id: int | None = None) -> tuple[list[Recording], int]:
         async with self._uow_factory() as uow:
-            return await uow.recordings.get_page(offset, limit)
+            return await uow.recordings.get_page(offset, limit, user_id=user_id)
 
     async def update_recording_status(
         self, recording_id: int, status: str, error_message: str | None = None
@@ -77,6 +77,34 @@ class RecordingService:
             recording = await uow.recordings.update_status(recording_id, status, error_message)
             await uow.commit()
             return recording
+
+    async def delete_recording(self, recording_id: int, user_id: int) -> bool:
+        """Удалить запись: S3-файл + строку в БД."""
+        async with self._uow_factory() as uow:
+            recording = await uow.recordings.get_by_id(recording_id)
+            if recording is None or recording.user_id != user_id:
+                return False
+            # Извлекаем ключ S3 из file_url (формат: recordings/{user_id}/{uuid}.{ext})
+            file_key = self._extract_file_key(recording.file_url)
+            if file_key:
+                try:
+                    await uow.delete_file(file_key)
+                except Exception:
+                    pass  # файл мог быть уже удалён
+            await uow.recordings.delete(recording_id)
+            await uow.commit()
+            return True
+
+    @staticmethod
+    def _extract_file_key(file_url: str) -> str | None:
+        """Извлекает S3 key из presigned URL или прямого пути."""
+        # presigned URL содержит путь вида /bucket/recordings/...
+        # ищем 'recordings/' в URL
+        marker = "recordings/"
+        idx = file_url.find(marker)
+        if idx == -1:
+            return None
+        return file_url[idx:]
 
     @staticmethod
     async def _create_recording(

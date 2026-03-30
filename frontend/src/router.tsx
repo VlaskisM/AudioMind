@@ -1,10 +1,27 @@
-import { createBrowserRouter } from 'react-router'
-import UploadPage from './pages/UploadPage'
-import ProcessingPage from './pages/ProcessingPage'
+import { createBrowserRouter, Navigate, useParams } from 'react-router'
 import WorkspacePage from './pages/WorkspacePage'
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
+
+function ProcessingRedirect() {
+  const { id } = useParams<{ id: string }>()
+  return <Navigate to={`/recordings/${id}`} replace />
+}
 
 export const router = createBrowserRouter([
-  { path: '/', Component: UploadPage },
-  { path: '/recordings/:id/processing', Component: ProcessingPage },
-  { path: '/recordings/:id', Component: WorkspacePage },
+  { path: '/login', Component: LoginPage },
+  { path: '/register', Component: RegisterPage },
+  {
+    path: '/',
+    element: <ProtectedRoute><WorkspacePage /></ProtectedRoute>,
+  },
+  {
+    path: '/recordings/:id/processing',
+    element: <ProtectedRoute><ProcessingRedirect /></ProtectedRoute>,
+  },
+  {
+    path: '/recordings/:id',
+    element: <ProtectedRoute><WorkspacePage /></ProtectedRoute>,
+  },
 ])

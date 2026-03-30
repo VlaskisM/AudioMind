@@ -49,8 +49,6 @@ services:
       dockerfile: data_ingress/Dockerfile
     container_name: speechmate-app
     restart: unless-stopped
-    ports:
-      - "8001:8000"
     env_file:
       - .env
     environment:
@@ -121,8 +119,6 @@ services:
       - .env
     environment:
       MONGO_HOST: speechmate-mongodb
-    ports:
-      - "8003:8003"
     depends_on:
       - mongodb
 
@@ -130,14 +126,25 @@ services:
     build: ./frontend
     container_name: speechmate-frontend
     restart: unless-stopped
-    ports:
-      - "5174:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
       - app
       - llm_analysis
+
+  nginx:
+    image: nginx:alpine
+    container_name: speechmate-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+      - llm_analysis
+      - frontend
 
 volumes:
   postgres_data:

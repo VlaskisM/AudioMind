@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.services.analysis import AnalysisError
@@ -9,6 +11,7 @@ from src.web.schemas.chat import (
 )
 from src.web.schemas.common import BaseResponse
 from src.web.dependencies import get_chat_service
+from src.web.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/analysis", tags=["chat"])
 
@@ -17,6 +20,7 @@ router = APIRouter(prefix="/analysis", tags=["chat"])
 async def ask_chat(
     recording_id: int,
     body: ChatRequest,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: ChatService = Depends(get_chat_service),
 ) -> ChatResponse:
     """Задать вопрос по транскрипции записи."""
@@ -32,6 +36,7 @@ async def ask_chat(
 @router.get("/{recording_id}/chat/history", response_model=ChatHistoryResponse)
 async def get_chat_history(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: ChatService = Depends(get_chat_service),
 ) -> ChatHistoryResponse:
     """Получить историю сообщений чата для записи."""
@@ -42,6 +47,7 @@ async def get_chat_history(
 @router.delete("/{recording_id}/chat", response_model=BaseResponse)
 async def delete_chat(
     recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
     service: ChatService = Depends(get_chat_service),
 ) -> BaseResponse:
     """Сбросить историю чата для записи."""
