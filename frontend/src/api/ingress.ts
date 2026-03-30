@@ -53,6 +53,10 @@ export function getRecordings(offset = 0, limit = 50) {
   return ingressApi.get<PaginatedResponse>('/recordings/', { params: { offset, limit } })
 }
 
+export function deleteRecording(recordingId: number) {
+  return ingressApi.delete(`/recordings/${recordingId}`)
+}
+
 export function uploadRecording(
   file: File,
   onProgress?: (percent: number) => void

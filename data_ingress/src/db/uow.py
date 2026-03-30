@@ -84,3 +84,7 @@ class UnitOfWork(AbstractUnitOfWork):
     async def get_file_url(self, file_key: str) -> str:
         await self._ensure_s3()
         return await self._s3.get_file_url(file_key)
+
+    async def delete_file(self, file_key: str) -> None:
+        await self._ensure_s3()
+        await self._s3.delete_file(file_key)

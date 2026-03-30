@@ -122,16 +122,31 @@ class LLMClient:
         )
 
     @staticmethod
-    def _parse_json_response(text: str, response_format: type[BaseModel]) -> BaseModel:
-        """Извлекает JSON из текста ответа и валидирует через Pydantic."""
+    def _strip_markdown(text: str) -> str:
+        """Убирает markdown code block обёртку из ответа LLM."""
         content = text.strip()
-        # Убираем markdown code block если есть
         if content.startswith("```"):
-            # Убираем первую строку (```json) и последнюю (```)
             lines = content.split("\n")
             lines = [l for l in lines if not l.strip().startswith("```")]
             content = "\n".join(lines)
-        return response_format.model_validate_json(content)
+        return content
+
+    @staticmethod
+    def _parse_json_response(text: str, response_format: type[BaseModel]) -> BaseModel:
+        """Извлекает JSON из текста ответа и валидирует через Pydantic."""
+        content = LLMClient._strip_markdown(text)
+        try:
+            return response_format.model_validate_json(content)
+        except Exception:
+            # GigaChat иногда генерирует невалидный JSON —
+            # пробуем через json.loads с более мягким парсингом
+            try:
+                data = json.loads(content, strict=False)
+                return response_format.model_validate(data)
+            except Exception:
+                raise RuntimeError(
+                    f"LLM вернул невалидный JSON, не удалось распарсить ответ"
+                )
 
     async def complete_structured(
         self,

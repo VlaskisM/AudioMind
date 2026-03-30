@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { Plus, LogOut } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { Plus, LogOut, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRecordings } from '@/hooks/useRecordings'
+import { deleteRecording } from '@/api/ingress'
 import { useAuthStore } from '@/stores/authStore'
 import { useWorkspaceStore } from '@/stores/workspaceStore'
 import { UploadModal } from '@/components/workspace/UploadModal'
@@ -32,8 +35,25 @@ export function RecordingSidebar() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const setUploadModalOpen = useWorkspaceStore((s) => s.setUploadModalOpen)
+  const queryClient = useQueryClient()
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const recordings = data?.data ?? []
+
+  async function handleDelete(e: React.MouseEvent, recordingId: number) {
+    e.stopPropagation()
+    if (deletingId) return
+    setDeletingId(recordingId)
+    try {
+      await deleteRecording(recordingId)
+      queryClient.invalidateQueries({ queryKey: ['recordings'] })
+      if (String(recordingId) === id) {
+        navigate('/recordings')
+      }
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <Sidebar>
@@ -58,7 +78,7 @@ export function RecordingSidebar() {
 
                 if (isProcessing) {
                   return (
-                    <SidebarMenuItem key={rec.id}>
+                    <SidebarMenuItem key={rec.id} className="group/item">
                       <HoverCard openDelay={300}>
                         <HoverCardTrigger asChild>
                           <SidebarMenuButton
@@ -77,12 +97,21 @@ export function RecordingSidebar() {
                           <ProcessingStatus currentStatus={rec.status} />
                         </HoverCardContent>
                       </HoverCard>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 opacity-0 transition-opacity group-hover/item:opacity-100"
+                        disabled={deletingId === rec.id}
+                        onClick={(e) => handleDelete(e, rec.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                      </Button>
                     </SidebarMenuItem>
                   )
                 }
 
                 return (
-                  <SidebarMenuItem key={rec.id}>
+                  <SidebarMenuItem key={rec.id} className="group/item">
                     <SidebarMenuButton
                       isActive={String(rec.id) === id}
                       onClick={() => navigate(`/recordings/${rec.id}`)}
@@ -96,6 +125,15 @@ export function RecordingSidebar() {
                         </Badge>
                       )}
                     </SidebarMenuButton>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 opacity-0 transition-opacity group-hover/item:opacity-100"
+                      disabled={deletingId === rec.id}
+                      onClick={(e) => handleDelete(e, rec.id)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                    </Button>
                   </SidebarMenuItem>
                 )
               })

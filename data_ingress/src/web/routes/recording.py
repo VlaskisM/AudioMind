@@ -55,6 +55,16 @@ async def upload_recording(
     return mapper.to_response(recording)
 
 
+@router.delete("/{recording_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_recording(
+    recording_id: int,
+    user_id: Annotated[int, Depends(get_current_user)],
+):
+    deleted = await service.delete_recording(recording_id, user_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Recording not found")
+
+
 @router.get("/{recording_id}/status", response_model=StatusResponse)
 async def get_recording_status(
     recording_id: int,
