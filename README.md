@@ -111,15 +111,13 @@ GIGACHAT_CREDENTIALS=<ваши_gigachat_credentials_base64>
 docker compose up --build
 ```
 
-4. Откройте в браузере: **http://localhost:5174**
+4. Откройте в браузере: **http://localhost**
 
 ## Сервисы и порты
 
 | Сервис | Порт | Назначение |
 |--------|------|-----------|
-| Frontend | [localhost:5174](http://localhost:5174) | Веб-интерфейс |
-| Data Ingress API | [localhost:8001](http://localhost:8001) | API загрузки и управления записями |
-| LLM Analysis API | [localhost:8003](http://localhost:8003) | API анализа и чата |
+| Nginx (точка входа) | [localhost](http://localhost) | Реверс-прокси: frontend, API |
 | PostgreSQL | localhost:5434 | Метаданные записей |
 | MongoDB | localhost:27017 | Транскрипции, диаризации, анализы |
 | MinIO Console | [localhost:9002](http://localhost:9002) | Управление файловым хранилищем |
@@ -127,18 +125,23 @@ docker compose up --build
 
 ## API
 
-### Data Ingress (`/recordings`)
+Все API-запросы требуют JWT-токен в заголовке `Authorization: Bearer <token>`.
+
+Маршрутизация через Nginx: `/api/ingress/*` → Data Ingress, `/api/analysis/*` → LLM Analysis.
+
+### Data Ingress (`/api/ingress/recordings`)
 
 | Метод | Эндпоинт | Описание |
 |-------|----------|----------|
-| `POST` | `/recordings/upload?user_id=1` | Загрузка аудиофайла (multipart/form-data) |
+| `POST` | `/recordings/upload` | Загрузка аудиофайла (multipart/form-data) |
 | `GET` | `/recordings/?offset=0&limit=20` | Список записей с пагинацией |
 | `GET` | `/recordings/{id}/status` | Статус обработки записи |
 | `PATCH` | `/recordings/{id}/status` | Обновление статуса (callback от worker'ов) |
+| `DELETE` | `/recordings/{id}` | Удаление записи (S3 + БД) |
 
 **Статусы записи:** `uploaded` → `transcribing` → `diarizing` → `ready` / `failed`
 
-### LLM Analysis (`/analysis`)
+### LLM Analysis (`/api/analysis/analysis`)
 
 | Метод | Эндпоинт | Описание |
 |-------|----------|----------|
