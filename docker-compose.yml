@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:17
-    container_name: speechmate-postgres
+    container_name: audiomind-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${DB_USER}
@@ -20,7 +20,7 @@ services:
 
   minio:
     image: minio/minio
-    container_name: speechmate-minio
+    container_name: audiomind-minio
     restart: unless-stopped
     environment:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY}
@@ -34,7 +34,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: speechmate-rabbitmq
+    container_name: audiomind-rabbitmq
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
@@ -47,15 +47,15 @@ services:
     build:
       context: .
       dockerfile: data_ingress/Dockerfile
-    container_name: speechmate-app
+    container_name: audiomind-app
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      DB_HOST: speechmate-postgres
+      DB_HOST: audiomind-postgres
       DB_PORT: 5432
-      S3_ENDPOINT: http://speechmate-minio:9000
-      RABBITMQ_HOST: speechmate-rabbitmq
+      S3_ENDPOINT: http://audiomind-minio:9000
+      RABBITMQ_HOST: audiomind-rabbitmq
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,7 +66,7 @@ services:
 
   mongodb:
     image: mongo:7
-    container_name: speechmate-mongodb
+    container_name: audiomind-mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
@@ -77,15 +77,15 @@ services:
     build:
       context: .
       dockerfile: transcription_service/Dockerfile
-    container_name: speechmate-transcription
+    container_name: audiomind-transcription
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      RABBITMQ_HOST: speechmate-rabbitmq
-      S3_ENDPOINT: http://speechmate-minio:9000
-      MONGO_HOST: speechmate-mongodb
-      DATA_INGRESS_URL: http://speechmate-app:8000
+      RABBITMQ_HOST: audiomind-rabbitmq
+      S3_ENDPOINT: http://audiomind-minio:9000
+      MONGO_HOST: audiomind-mongodb
+      DATA_INGRESS_URL: http://audiomind-app:8000
     depends_on:
       - rabbitmq
       - minio
@@ -96,15 +96,15 @@ services:
     build:
       context: .
       dockerfile: dialogue_detection/Dockerfile
-    container_name: speechmate-dialogue-detection
+    container_name: audiomind-dialogue-detection
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      RABBITMQ_HOST: speechmate-rabbitmq
-      S3_ENDPOINT: http://speechmate-minio:9000
-      MONGO_HOST: speechmate-mongodb
-      DATA_INGRESS_URL: http://speechmate-app:8000
+      RABBITMQ_HOST: audiomind-rabbitmq
+      S3_ENDPOINT: http://audiomind-minio:9000
+      MONGO_HOST: audiomind-mongodb
+      DATA_INGRESS_URL: http://audiomind-app:8000
     depends_on:
       - rabbitmq
       - minio
@@ -113,18 +113,18 @@ services:
 
   llm_analysis:
     build: ./llm_analysis_service
-    container_name: speechmate-llm-analysis
+    container_name: audiomind-llm-analysis
     restart: unless-stopped
     env_file:
       - .env
     environment:
-      MONGO_HOST: speechmate-mongodb
+      MONGO_HOST: audiomind-mongodb
     depends_on:
       - mongodb
 
   frontend:
     build: ./frontend
-    container_name: speechmate-frontend
+    container_name: audiomind-frontend
     restart: unless-stopped
     volumes:
       - ./frontend:/app
@@ -135,7 +135,7 @@ services:
 
   nginx:
     image: nginx:alpine
-    container_name: speechmate-nginx
+    container_name: audiomind-nginx
     restart: unless-stopped
     ports:
       - "80:80"

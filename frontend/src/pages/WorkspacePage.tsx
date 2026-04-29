@@ -24,7 +24,7 @@ export default function WorkspacePage() {
   const current = recordings.find((r) => String(r.id) === id)
   const title = id
     ? (current?.original_filename ?? `Recording ${id}`)
-    : 'Speechmate'
+    : 'AudioMind'
 
   return (
     <SidebarProvider>
