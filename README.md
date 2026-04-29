@@ -1,4 +1,4 @@
-# Speechmate
+# AudioMind
 
 Веб-приложение для автоматической транскрипции, диаризации и интеллектуального анализа аудиозаписей с помощью LLM.
 
@@ -65,8 +65,8 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/VlaskisM/Speechmate.git
-cd Speechmate
+git clone https://github.com/VlaskisM/AudioMind.git
+cd AudioMind
 ```
 
 2. Создайте файл `.env` в корне проекта:
@@ -74,9 +74,9 @@ cd Speechmate
 # PostgreSQL
 DB_HOST=localhost
 DB_PORT=5434
-DB_USER=speechmate
-DB_PASSWORD=speechmate
-DB_NAME=speechmate
+DB_USER=audiomind
+DB_PASSWORD=audiomind
+DB_NAME=audiomind
 
 # MinIO (S3)
 S3_ACCESS_KEY=minioadmin
@@ -95,7 +95,7 @@ RABBITMQ_QUEUE=audio_processing
 # MongoDB
 MONGO_HOST=localhost
 MONGO_PORT=27017
-MONGO_DB=speechmate
+MONGO_DB=audiomind
 
 # Очереди
 DIARIZATION_QUEUE=diarization_processing
@@ -157,7 +157,7 @@ docker compose up --build
 ## Структура проекта
 
 ```
-Speechmate/
+AudioMind/
 ├── data_ingress/              # API-сервис загрузки и управления записями
 │   ├── src/
 │   │   ├── configs/           # Настройки (DB, S3, RabbitMQ, CORS)
